@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TOEIC形式 練習問題</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday study tool: calm, exact, encouraging
+   IDEA a Japanese mark sheet: orange-ink ovals, ruled rows, a pencil-black fill
+   PICTURE the live question card with big oval bubbles, beside the answer sheet that fills as you go
+   COLOUR white paper, graphite ink, mark-sheet orange as lead, green/red only for right/wrong
+   TYPE Zen Kaku Gothic New for Japanese + Inter for English
+   LAYOUT laptop: card left, sticky answer sheet right; phone: tabs, card, sheet below */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#16120f);--ink:light-dark(#1d1a17,#efe8e2);--mut:light-dark(#6b625b,#b3a89f);--or:light-dark(#d9532b,#ff8a63);--pale:light-dark(#fff3ed,#2a1c16);--line:light-dark(#f0c9b8,#5a3527);--card:light-dark(#ffffff,#1e1814);--ok:light-dark(#1d7f53,#5fd19a);--ng:light-dark(#c2302a,#ff7a70);--fill:light-dark(#2a2522,#f3ece6)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 Inter,"Zen Kaku Gothic New",system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:"Zen Kaku Gothic New",Inter,sans-serif;margin:0}
+button,select{font:inherit;color:inherit}
+.top{background:var(--or);color:#fff;padding:20px max(4vw,16px) 0}
+.top h1{font-size:clamp(26px,4vw,38px);line-height:1.1;letter-spacing:-.01em;text-wrap:balance}
+.top p{margin:6px 0 14px;font-size:14px;opacity:.92}
+.tabs{display:flex;gap:6px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:0}
+.tab{flex:none;scroll-snap-align:start;border:0;background:color-mix(in srgb,#fff 18%,transparent);color:#fff;border-radius:10px 10px 0 0;padding:10px 14px 9px;cursor:pointer;min-height:44px;text-align:left;line-height:1.25}
+.tab b{display:block;font-size:15px}
+.tab span{font-size:13px;opacity:.9}
+.tab[aria-selected=true]{background:var(--bg);color:var(--ink)}
+.tab[aria-selected=true] span{color:var(--mut);opacity:1}
+.tab:focus-visible,.btn:focus-visible,.ch:focus-visible,.sq:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.wrap{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;max-width:1240px;margin:0 auto;padding:22px max(4vw,16px) 40px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:clamp(16px,3vw,28px)}
+.meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:baseline}
+.meta h2{font-size:24px}
+.meta small{color:var(--mut);font-size:14px;white-space:nowrap}
+.dir{color:var(--mut);font-size:14px;margin:6px 0 16px}
+.btn{border:1.5px solid var(--or);background:transparent;color:var(--or);border-radius:999px;padding:9px 18px;min-height:44px;cursor:pointer;font-weight:600}
+.btn.solid{background:var(--or);color:#fff}
+.btn:disabled{opacity:.4;cursor:default}
+select{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:8px;min-height:44px;font-size:16px}
+.note{font-size:13px;color:var(--mut)}
+.text{white-space:pre-wrap;background:var(--pale);border-radius:10px;padding:18px 20px;margin-bottom:18px;font-size:16px;line-height:1.7}
+.text h4{margin:0 0 6px;font-size:14px;color:var(--or)}
+.text+.text{margin-top:-6px}
+.blank{display:inline-block;border-bottom:2px solid var(--or);padding:0 6px;font-weight:700;color:var(--or);white-space:nowrap}
+.q{border-top:1px solid var(--line);padding:16px 0 4px}
+.q:first-of-type{border-top:0}
+.qt{font-weight:600;margin:0 0 10px;white-space:pre-line}
+.qt b{color:var(--or);margin-right:6px;white-space:nowrap}
+.chs{display:grid;gap:8px}
+.chs.row{grid-template-columns:repeat(auto-fit,minmax(64px,90px))}
+.ch{display:flex;gap:12px;align-items:center;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 12px;min-height:48px;cursor:pointer}
+.ch:hover:not(:disabled){background:var(--pale)}
+.ch:disabled{cursor:default}
+.row .ch{justify-content:center;padding:8px}
+.ov{flex:none;width:30px;height:38px;border:2px solid var(--or);border-radius:50%;display:grid;place-items:center;font:700 14px Inter,sans-serif;color:var(--or)}
+.ch.sel .ov{background:var(--fill);border-color:var(--fill);color:var(--bg)}
+.ch.right{border-color:var(--ok);box-shadow:inset 0 0 0 1px var(--ok)}
+.ch.wrong{border-color:var(--ng)}
+.fb{margin:10px 0 6px;padding:10px 14px;border-radius:8px;font-size:15px;background:var(--pale)}
+.fb strong.ok{color:var(--ok)}
+.fb strong.ng{color:var(--ng)}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:20px;flex-wrap:wrap}
+.sheet{position:sticky;top:16px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.sheet h3{font-size:18px}
+.score{font:700 clamp(34px,5vw,44px)/1.1 Inter,sans-serif;margin:8px 0 2px;color:var(--or)}
+.score small{font-size:16px;color:var(--mut);font-weight:600}
+.rows{margin:14px 0;max-height:52vh;overflow-y:auto;border-top:1px solid var(--line)}
+.sq{display:grid;grid-template-columns:44px 1fr 20px;align-items:center;gap:4px;width:100%;border:0;border-bottom:1px solid var(--line);background:transparent;padding:6px 2px;cursor:pointer;min-height:40px}
+.sq.cur{background:var(--pale)}
+.sq>b{font:600 14px Inter,sans-serif;text-align:right;padding-right:6px;color:var(--or)}
+.bub{display:flex;gap:6px}
+.bub i{width:20px;height:26px;border:1.5px solid var(--or);border-radius:50%;font:600 11px/23px Inter,sans-serif;font-style:normal;color:var(--or);text-align:center}
+.bub i.on{background:var(--fill);border-color:var(--fill);color:var(--bg)}
+.mk{font-weight:700;font-size:15px}
+.mk.ok{color:var(--ok)}
+.mk.ng{color:var(--ng)}
+.modes{display:inline-flex;gap:4px;background:color-mix(in srgb,#000 14%,transparent);border-radius:999px;padding:4px;margin:0 0 14px}
+.mode{border:0;background:transparent;color:#fff;border-radius:999px;padding:8px 20px;min-height:40px;cursor:pointer;font-weight:700;font-size:15px}
+.mode[aria-pressed=true]{background:#fff;color:var(--or)}
+.mode:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.sub{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 18px}
+.sub .btn{padding:7px 16px;min-height:40px}
+.sub .btn[aria-pressed=true]{background:var(--or);color:#fff}
+.fc{background:var(--pale);border-radius:14px;padding:clamp(22px,4vw,40px);min-height:260px;display:grid;align-content:center;justify-items:center;text-align:center;gap:10px;position:relative}
+.fc .en{font:700 clamp(30px,5vw,44px)/1.15 Inter,sans-serif;letter-spacing:-.01em;overflow-wrap:anywhere}
+.fc .pos{font-size:14px;color:var(--mut)}
+.fc .ja{font-size:22px;font-weight:700;color:var(--or)}
+.fc .ex{font-size:16px;color:var(--ink);max-width:36em}
+.fc .cnt{position:absolute;top:12px;right:16px;font-size:13px;color:var(--mut)}
+.fc .tag{position:absolute;top:12px;left:16px;font-size:13px;color:var(--ok);font-weight:700}
+.row2{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:16px}
+.chk{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mut);cursor:pointer;min-height:40px}
+.chk input{width:18px;height:18px;accent-color:var(--or)}
+.srch{width:100%;font-size:16px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);margin-bottom:10px}
+.vl{list-style:none;margin:0;padding:0}
+.vl li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border-bottom:1px solid var(--line);padding:10px 2px}
+.vl b{font-family:Inter,sans-serif;font-size:17px}
+.vl .m{color:var(--or);font-weight:700;margin-left:8px}
+.vl .p{color:var(--mut);font-size:13px;margin-left:6px}
+.vl .x{display:block;font-size:14px;color:var(--mut)}
+.kn{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:6px 12px;min-height:40px;cursor:pointer;font-size:13px;color:var(--mut);white-space:nowrap}
+.kn[aria-pressed=true]{background:var(--ok);border-color:var(--ok);color:#fff}
+.bar{height:10px;background:var(--pale);border-radius:99px;overflow:hidden;margin:10px 0 4px}
+.bar i{display:block;height:100%;background:var(--or);border-radius:99px}
+.stat{display:flex;justify-content:space-between;gap:8px;font-size:14px;border-bottom:1px solid var(--line);padding:8px 4px}
+.stat.on{background:var(--pale)}
+.stat b{display:inline-block;min-width:3.2em;text-align:right;color:var(--or);font-variant-numeric:tabular-nums}
+.nt{display:block;margin-top:6px;text-align:left;font-size:15px;line-height:1.6}
+.nt b,.nb{display:inline-block;font-size:12px;font-weight:700;color:#fff;background:var(--or);border-radius:4px;padding:0 6px;margin-right:8px;vertical-align:1px}
+.eg{display:block;margin-top:6px;padding-left:10px;border-left:3px solid var(--or);font-family:Inter,sans-serif}
+.eg i,.ex i.j{display:block;font-style:normal;font-size:14px;color:var(--mut);font-family:"Zen Kaku Gothic New",sans-serif}
+.vl .eg2{color:var(--ink)}
+.fc .nt{max-width:36em;background:var(--card);border-radius:8px;padding:10px 14px}
+.foot{max-width:1240px;margin:0 auto;padding:0 max(4vw,16px) 32px;font-size:13px;color:var(--mut)}
+@media(max-width:860px){.wrap{grid-template-columns:minmax(0,1fr)}.sheet{position:static}.rows{max-height:none}}
+@media(prefers-reduced-motion:no-preference){.ch .ov{transition:background .15s,border-color .15s}}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>TOEIC形式 練習問題</h1>
+  <p>テスト：リーディング全100問（本番と同じ量）／勉強：頻出単語100語・熟語50個。すべてオリジナル（非公式）。</p>
+  <div class="modes" id="modes" role="group" aria-label="モード"></div>
+  <nav class="tabs" id="tabs" role="tablist" aria-label="パート選択"></nav>
+</header>
+<main class="wrap">
+  <article class="card" id="card" aria-live="polite"></article>
+  <aside class="sheet" id="sheet" aria-label="解答用紙"></aside>
+</main>
+<p class="foot">問題はすべてこのアプリ用に作成したオリジナルで、ETSおよびIIBCとは関係ありません。TOEICはETSの登録商標です。解答と「覚えた」の記録はこのブラウザにだけ保存されます。</p>
+<script>
+{
+const L='ABCD';
+const q=(t,c,a,e)=>({t,c,a,e});
+const P=[
+{name:'Part 5',jp:'短文穴埋め',n:4,dir:'空所に入る最も適切な語句を選んでください。',sets:[
+{q:[q('Ms. Chen will ------- the quarterly results at the board meeting on Thursday.',['present','presented','presenting','presentation'],0,'助動詞 will の後ろは動詞の原形です。')]},
+{q:[q('All employees must submit their expense reports ------- the end of the month.',['until','during','by','since'],2,'by は「～までに（期限）」、until は「～までずっと（継続）」。提出は1回の行為なので by です。')]},
+{q:[q('The new manager is known for her ------- approach to solving problems.',['create','creative','creatively','creation'],1,'名詞 approach の前には形容詞が入ります。')]},
+{q:[q('------- the heavy rain, the outdoor concert was held as scheduled.',['Although','Because','Despite','However'],2,'空所の後ろが名詞句（the heavy rain）なので前置詞の Despite。Although は後ろに主語＋動詞が必要です。')]},
+{q:[q('Customers ------- purchase two or more items will receive free shipping.',['whose','which','whom','who'],3,'先行詞が人（Customers）で、空所の後ろに主語がないので主格の関係代名詞 who です。')]},
+{q:[q('The conference room on the fifth floor is currently ------- renovated.',['be','being','been','to be'],1,'is being + 過去分詞 ＝「～されているところだ」（受動態の進行形）。currently もヒントです。')]},
+{q:[q('Mr. Ramos has worked at Valdez Engineering ------- 2019.',['for','from','at','since'],3,'現在完了形と「2019」という起点があるので since。for は期間（for five years）に使います。')]},
+{q:[q('Please read the instructions ------- before installing the software.',['careful','carefully','care','carefulness'],1,'動詞 read を修飾するので副詞 carefully です。')]},
+{q:[q('The marketing team was ------- impressed with the survey results that it decided to expand the campaign.',['so','such','very','too'],0,'so + 形容詞 + that ～ ＝「とても…なので～」。such は名詞を伴います。')]},
+{q:[q('If the shipment ------- earlier, we could have started production on time.',['arrives','arrived','had arrived','will arrive'],2,'主節が could have + 過去分詞なので、仮定法過去完了。if 節は had + 過去分詞です。')]},
+{q:[q('The company\'s profits increased ------- after the new product was launched.',['significant','significantly','significance','signify'],1,'動詞 increased を修飾するので副詞 significantly です。')]},
+{q:[q('Neither the manager ------- her assistant was available to answer the phone.',['or','and','nor','but'],2,'neither A nor B ＝「AもBも～ない」。セットで覚えましょう。')]},
+{q:[q('Applicants are required to have at least three years of ------- in sales.',['experience','experienced','experiencing','experiences'],0,'「経験（年数）」の意味の experience は数えられない名詞なので s は付きません。前置詞 of の後ろなので名詞です。')]},
+{q:[q('The museum will be closed to the public ------- the installation of the new exhibit.',['while','when','among','during'],3,'後ろが名詞句なので前置詞の during（～の間）。while と when は接続詞なので後ろに主語＋動詞が必要です。')]},
+{q:[q('The new branch office is ------- located near the central train station.',['convenience','convenient','conveniently','convenienced'],2,'過去分詞 located を修飾する副詞 conveniently。conveniently located ＝「便利な場所にある」。')]},
+{q:[q('Ms. Yamada is responsible ------- training all new employees.',['to','with','of','for'],3,'be responsible for ～ ＝「～を担当している」。')]},
+{q:[q('The board of directors ------- the proposal at next month\'s meeting.',['has discussed','will discuss','discussed','discussing'],1,'at next month\'s meeting（来月の会議で）なので未来形です。')]},
+{q:[q('Please contact Mr. Brooks if you have ------- questions about the schedule.',['any','every','much','each'],0,'if 節の中で「何か～があれば」は any + 複数名詞。every / each は単数名詞、much は数えられない名詞に使います。')]},
+{q:[q('Our customer service representatives are available ------- day of the week.',['all','every','whole','many'],1,'every + 単数名詞 ＝「毎～」。every day of the week ＝「毎日・曜日を問わず」。')]},
+{q:[q('Only employees with ------- identification badges may enter the laboratory.',['validity','validate','valid','validly'],2,'名詞 badges の前なので形容詞 valid（有効な）です。')]},
+{q:[q('The shipment was delayed ------- a shortage of drivers.',['although','so that','in spite','because of'],3,'「運転手不足のために」＝ 原因。後ろが名詞句なので because of。in spite は of が付いて in spite of です。')]},
+{q:[q('Ms. Lopez, ------- has worked in the finance department for ten years, was promoted to director.',['who','which','whose','she'],0,'先行詞が人（Ms. Lopez）で、後ろに主語がないので主格の who。カンマ付きの関係代名詞は that が使えません。')]},
+{q:[q('Attendance at the safety seminar is ------- for all factory workers.',['eager','mandatory','previous','frequent'],1,'語彙問題。mandatory ＝「必須の・義務の」。「参加は全員必須」で意味が通ります。')]},
+{q:[q('The hotel offers a shuttle service to the airport for guests ------- request.',['in','at','on','by'],2,'on request ＝「頼めば・要望に応じて」。upon request とも言います。')]},
+{q:[q('By the time the train arrived, the passengers ------- for over an hour.',['waited','have waited','had been waiting','are waiting'],2,'過去のある時点（電車が着いた時）までずっと続いていた動作なので、過去完了進行形 had been waiting。')]},
+{q:[q('Please ------- that all lights are turned off before you leave the office.',['assure','insure','secure','ensure'],3,'ensure that ～ ＝「必ず～であるようにする」。assure は人を目的語にとる（assure you that…）ので不適切です。')]},
+{q:[q('The new software allows users to create reports ------- than before.',['quick','quickly','more quickly','most quickly'],2,'than があるので比較級。動詞 create を修飾する副詞の比較級 more quickly です。')]},
+{q:[q('Ms. Grant will ------- the annual conference on behalf of the CEO.',['attend','participate','appear','go'],0,'attend は他動詞で、すぐ後ろに目的語をとれます。participate は participate in、go は go to が必要です。')]},
+{q:[q('Interested candidates should submit ------- résumé to the human resources office.',['they','their','them','theirs'],1,'名詞 résumé の前なので所有格 their です。')]},
+{q:[q('The construction project was completed ahead of schedule and ------- budget.',['under','across','onto','toward'],0,'under budget ＝「予算内で」。ahead of schedule（予定より早く）とあわせてよく出る表現です。')]}
+]},
+{name:'Part 6',jp:'長文穴埋め',n:4,dir:'文書を読み、空所に入る最も適切な語句または文を選んでください。',sets:[
+{tx:'To: All Staff\nFrom: Facilities Department\nSubject: Parking lot repairs\n\nPlease be aware that the east parking lot will be closed from Monday, May 12, to Friday, May 16. During this period, workers will {0} the surface and paint new lines. Employees who usually park in the east lot may use the west lot {1}. {2} We recommend arriving early or taking public transportation. We apologize for any {3} this may cause.',q:[
+q('',['repair','repairing','repaired','repairs'],0,'will の後ろなので動詞の原形 repair。and paint と並んでいるのもヒントです。'),
+q('',['yet','instead','therefore','rather'],1,'「東の駐車場の代わりに西を使ってよい」＝ instead（代わりに）。'),
+q('Which sentence fits best in the blank?',['The west lot was built ten years ago.','Our department has hired new staff.','However, spaces there are limited.','The new lines will be painted yellow.'],2,'次の文「早めに来るか公共交通機関を」につながるのは「ただし西側は台数が限られている」です。'),
+q('',['inconvenient','inconvenience','inconveniently','inconvenienced'],1,'any の後ろで、this may cause の目的語になる名詞 inconvenience（不便）です。')]},
+{tx:'Harbor City Library is pleased to announce a new series of free workshops for small business owners. Starting in July, sessions will be held every Saturday morning in the library\'s community room. Topics {0} marketing on social media, basic accounting, and writing a business plan. {1} Space is limited to twenty participants per session, so early registration is {2} recommended. To sign up, visit the front desk or complete the form on our Web site. The workshops are made possible {3} a grant from the Harbor City Business Association.',q:[
+q('',['include','includes','including','included'],0,'主語 Topics は複数形で、文に動詞がないので include です。'),
+q('Which sentence fits best in the blank?',['The library closes at 6 P.M. on weekdays.','Many books were donated last year.','Library cards can be renewed online.','Each session will be led by a local business expert.'],3,'ワークショップの内容説明の流れに合うのは、講師についての文です。'),
+q('',['strong','strongly','stronger','strength'],1,'過去分詞 recommended を修飾する副詞 strongly。strongly recommended は定番の組み合わせです。'),
+q('',['about','between','by','along'],2,'made possible by ～ ＝「～によって実現した」。')]},
+{tx:'Dear Ms. Alvarez,\n\nThank you for your recent purchase of the TravelLite suitcase. We hope it {0} your expectations. As a valued customer, you are invited to join our rewards program. Members earn points with every purchase, and these points can be {1} for discounts on future orders. {2} In addition, members receive early access to seasonal sales. If you have any questions, please contact our customer service team, {3} will be happy to assist you.\n\nSincerely,\nSunline Luggage',q:[
+q('',['meet','meeting','meets','to meet'],2,'主語 it は三人称単数なので meets。meet one\'s expectations ＝「期待に応える」。'),
+q('',['exchanged','exchanging','exchange','exchanges'],0,'can be + 過去分詞（受動態）。exchange A for B ＝「AをBと交換する」。'),
+q('Which sentence fits best in the blank?',['Our factory is located in Ohio.','Joining is free and takes only a few minutes.','The suitcase comes in three colors.','Your order was shipped yesterday.'],1,'会員プログラムの説明の途中なので、「入会は無料で数分で済む」が自然。次の In addition（さらに）にもつながります。'),
+q('',['who','which','they','what'],0,'先行詞は人の集まり（team）で、カンマの後に続く関係代名詞の主格なので who。they だと文が2つの節をつなげません。')]},
+{tx:'Cooper\'s Hardware Celebrates 25 Years\n\nCooper\'s Hardware, a family-owned store on Elm Avenue, will celebrate its 25th anniversary next weekend. The store first opened in 2001 with just two employees. Today, it {0} more than forty people. To thank the community for its support, the store will offer discounts of up to 50 percent on selected tools and garden supplies. {1}\n\nOwner Rachel Cooper says the store\'s success is due to its {2} customer service. "Our staff know our products well, and they take time to help every customer," she said. The celebration will begin at 9 A.M. on Saturday, and free refreshments will be served {3} the day.',q:[
+q('',['employ','employs','employed','employing'],1,'Today があるので現在形。主語 it は三人称単数なので employs です。'),
+q('Which sentence fits best in the blank?',['Hardware stores are busiest in winter.','Ms. Cooper plans to retire next year.','In addition, activities for children will be held in the parking lot.','The original building was torn down in 2010.'],2,'記念イベントの内容（割引）を説明している流れなので、In addition で別の催しを加える (C) が自然です。'),
+q('',['exceptional','exception','except','exceptionally'],0,'名詞句 customer service の前なので形容詞 exceptional（非常に優れた）です。'),
+q('',['among','between','across','throughout'],3,'throughout the day ＝「一日中」。')]}
+]},
+{name:'Part 7',jp:'読解',n:4,dir:'文書を読み、設問に答えてください。1つの文書の問題（No. 1–29）、2つの文書の問題（No. 30–39）、3つの文書の問題（No. 40–54）があります。',sets:[
+{tx:'NOTICE TO TENANTS — Westfield Office Tower\n\nThe building\'s elevators will undergo a routine inspection on Saturday, October 4, from 8:00 A.M. to 2:00 P.M. During this time, only Elevator C will be in service. Tenants planning deliveries on that day are asked to schedule them after 2:00 P.M. or to contact the building office at extension 210 to arrange use of the freight elevator.\n\nThank you for your cooperation.\nBuilding Management',q:[
+q('What is the purpose of the notice?',['To announce new office hours','To inform tenants about an elevator inspection','To introduce a new delivery company','To request rent payments'],1,'冒頭でエレベーターの定期点検を知らせています。'),
+q('What are tenants asked to do?',['Use only the stairs','Avoid the building on Saturday','Schedule deliveries after a certain time','Call a repair company'],2,'schedule them after 2:00 P.M. ＝ 配送を一定時刻以降にする。')]},
+{tx:'Sarah Ito (9:12 A.M.)\nHi Jun, the projector in Room 3B isn\'t working. The client presentation starts at 10.\n\nJun Park (9:14 A.M.)\nDid you try the other cable? Sometimes the connection is loose.\n\nSarah Ito (9:15 A.M.)\nYes, twice. Still nothing.\n\nJun Park (9:16 A.M.)\nOK. Room 4A is free this morning, and its projector was replaced last week.\n\nSarah Ito (9:17 A.M.)\nPerfect. I\'ll move everything up there now.\n\nJun Park (9:18 A.M.)\nI\'ll put a sign on the 3B door so the client knows where to go.',q:[
+q('What problem does Ms. Ito have?',['She is late for a meeting.','Some equipment is not working.','She lost a cable.','A client canceled a presentation.'],1,'the projector ... isn\'t working ＝ 機器が動かない。'),
+q('At 9:17 A.M., what does Ms. Ito most likely mean when she writes, "Perfect"?',['She is happy with her presentation slides.','The cable now works.','The client has arrived early.','She will use a different room.'],3,'直前の「4A が空いていてプロジェクターも新しい」を受けての「Perfect」。直後に「そっちに移動する」と続きます。'),
+q('What will Mr. Park do next?',['Replace a projector','Call the client','Post a notice on a door','Reserve Room 3B'],2,'I\'ll put a sign on the 3B door ＝ ドアに案内を貼る。')]},
+{tx:'[Advertisement]\nBrightline Language School — Business English Courses\n\n• Evening Course: Mondays and Wednesdays, 7–9 P.M., 10 weeks, $480\n• Weekend Intensive: Saturdays, 9 A.M.–3 P.M., 6 weeks, $520\n• Online Course: flexible schedule, 12 weeks, $350\n\nAll courses start on September 8. Register by August 25 and receive 10% off. A free placement test is available at our Main Street campus.\n\n[E-mail]\nTo: info@brightline-school.example\nFrom: Naoki Sato\nDate: August 20\nSubject: Course inquiry\n\nHello,\nI\'d like to improve my English for work. I prefer learning in a classroom with other students, but my job requires me to travel often on weekdays, so I can only attend classes on Saturdays. I would like to register for the course that fits my schedule today.\nAlso, could I take the placement test online instead of visiting your campus? I live about two hours from Main Street.\n\nThank you,\nNaoki Sato',q:[
+q('What is indicated about all the courses?',['They are taught online.','They begin on the same day.','They last ten weeks.','They are held in the evening.'],1,'広告に All courses start on September 8 とあります。'),
+q('Why can\'t Mr. Sato attend weekday classes?',['He travels often for his job.','He is a full-time student.','He works night shifts.','He lives abroad.'],0,'my job requires me to travel often on weekdays。'),
+q('Which course will Mr. Sato most likely register for?',['Evening Course','Online Course','Weekend Intensive','A private lesson'],2,'教室で学びたい＋土曜日しか通えない → 土曜開講の Weekend Intensive。オンラインは教室ではないので外れます。'),
+q('How much will Mr. Sato most likely pay?',['$350','$468','$480','$520'],1,'2文書の読み合わせ問題。メールは8月20日付で、8月25日までの申込は10%引き。$520 × 0.9 = $468。'),
+q('What does Mr. Sato ask about?',['Getting a refund','Changing the course dates','Parking at the campus','Taking the placement test remotely'],3,'could I take the placement test online ...? ＝ テストを遠隔で受けられるか。')]},
+{tx:'To: Kevin Walsh\nFrom: Amanda Ruiz, Office Manager\nDate: March 3\nSubject: Your new workspace\n\nDear Kevin,\n\nWelcome to Norvale Consulting! We are excited to have you join our design team on Monday, March 10. Your desk is on the fourth floor, next to the windows facing the park. Your laptop and security badge will be ready at the reception desk when you arrive.\n\nOn your first day, please attend the orientation session in Conference Room B from 9:30 to 11:00 A.M. After lunch, your supervisor, Ms. Tanaka, will introduce you to the rest of the team. If you have any dietary restrictions, please let me know by Friday, as we will be ordering a welcome lunch for you.\n\nBest regards,\nAmanda Ruiz',q:[
+q('Why was the e-mail sent?',['To welcome a new employee','To announce an office move','To schedule a job interview','To request a laptop repair'],0,'Welcome to Norvale Consulting! と、新しく入社する人に初日の案内をしています。'),
+q('What will Mr. Walsh do at 9:30 A.M. on March 10?',['Meet his supervisor','Have lunch with the team','Attend an orientation session','Visit a park'],2,'9:30〜11:00 はオリエンテーション。上司の Ms. Tanaka に会うのは昼食の後です。'),
+q('What is Mr. Walsh asked to do by Friday?',['Submit a signed contract','Choose a desk location','Call the reception desk','Inform Ms. Ruiz of any dietary restrictions'],3,'If you have any dietary restrictions, please let me know by Friday。')]},
+{tx:'GREENFIELD (June 2) — Solaria Energy announced on Monday that it will build a new solar panel factory on the outskirts of Greenfield. —[1]— Construction is scheduled to begin in September and is expected to take about eighteen months.\n\nThe factory will create approximately 300 jobs, most of them in manufacturing and quality control. —[2]— Mayor Linda Hsu welcomed the news, saying that the project would bring much-needed opportunities to the region. —[3]—\n\nSolaria, which is based in Portland, already operates two factories in other states. The company chose Greenfield because of its location near major highways and the availability of a skilled workforce. —[4]—',q:[
+q('What is the article mainly about?',['A new highway project','A company\'s plan to open a factory','The result of a local election','Rising energy prices'],1,'冒頭の1文で、太陽光パネル工場の建設計画を伝えています。'),
+q('How long will the construction take?',['About six months','About one year','About eighteen months','About two years'],2,'expected to take about eighteen months。9月は着工の時期です。'),
+q('Why did Solaria choose Greenfield?',['Because of its low taxes','Because the mayor asked the company','Because of its large population','Because of its access to highways and skilled workers'],3,'location near major highways and the availability of a skilled workforce の言い換えです。'),
+q('In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?\n"Training for these positions will be offered at Greenfield Community College."',['[1]','[2]','[3]','[4]'],1,'these positions（これらの職）が指すのは、直前の「約300人の雇用（製造・品質管理）」。だから [2] です。')]},
+{tx:'Riverside Community Center — Room Rental\n\nOur center has three rooms available for private events.\n\n• Maple Room: up to 20 guests, $40 per hour\n• Oak Hall: up to 80 guests, $90 per hour, includes a stage and sound system\n• Garden Terrace: up to 50 guests, $70 per hour, outdoors (available May–September only)\n\nReservations must be made at least two weeks in advance. A deposit of $100 is required at the time of booking. It will be returned after the event if the room is left clean. Community center members receive a 15% discount on all rentals.',q:[
+q('What is indicated about the Garden Terrace?',['It is available only part of the year.','It has a sound system.','It is the largest room.','It is free for members.'],0,'available May–September only ＝ 一年のうち一部の期間だけ使える。'),
+q('Which room would be suitable for a group of 60 people?',['Maple Room','Garden Terrace','Oak Hall','Any of the rooms'],2,'60人が入れるのは定員80人の Oak Hall だけです。'),
+q('What is true about the deposit?',['It is charged only to members.','It must be paid after the event.','It is $70 per hour.','It may be returned to the customer.'],3,'It will be returned after the event if the room is left clean ＝ 条件付きで返金される。')]},
+{tx:'Tom Becker (2:05 P.M.)\nAre you still at the print shop?\n\nElena Ruiz (2:06 P.M.)\nJust leaving. Why?\n\nTom Becker (2:07 P.M.)\nCould you pick up 50 more brochures? We\'ve already run out at the booth.\n\nElena Ruiz (2:08 P.M.)\nI\'ll see what I can do. They told me it takes about 20 minutes to print more.\n\nTom Becker (2:09 P.M.)\nThat\'s fine. The trade fair runs until six.',q:[
+q('Where most likely is Mr. Becker?',['At a print shop','At a trade fair','At a bank','At an airport'],1,'We\'ve already run out at the booth と The trade fair runs until six から、見本市のブースにいるとわかります。'),
+q('At 2:08 P.M., what does Ms. Ruiz most likely mean when she writes, "I\'ll see what I can do"?',['She will try to get more brochures printed.','She will look at the booth design.','She is unable to help Mr. Becker.','She will check the fair\'s schedule.'],0,'直後に「追加の印刷には20分かかると言われた」と続くので、追加印刷を頼んでみる、という意味です。')]},
+{tx:'Hollis Office Supply — Order Confirmation\n\nCustomer: Pinewood Dental Clinic\nOrder number: 58213\nOrder date: April 14\n\nPrinter paper (box of 10 reams) × 3 ..... $105.00\nBlack ink cartridges × 4 ..... $96.00\nDesk organizers × 2 ..... $38.00\n\nSubtotal: $239.00\nDelivery: FREE (orders over $200)\nTotal: $239.00\n\nEstimated delivery: April 17\nPlease note: Desk organizers are currently out of stock and will be shipped separately by April 24.\nQuestions? Call 555-0148.',q:[
+q('What is indicated about the order?',['It was placed by a hotel.','It included a discount coupon.','It qualified for free delivery.','It was paid for in cash.'],2,'Delivery: FREE (orders over $200)。合計が $239 なので送料無料の条件を満たしています。'),
+q('What was the total cost of the ink cartridges?',['$38.00','$96.00','$105.00','$239.00'],1,'Black ink cartridges × 4 の行が $96.00 です。'),
+q('What will most likely arrive after April 17?',['Printer paper','Ink cartridges','A refund','Desk organizers'],3,'Desk organizers は在庫切れで、4月24日までに別送されます。')]},
+{tx:'MEMO\n\nTo: All sales staff\nFrom: Gregory Hall, Sales Director\nDate: November 3\nRe: Updated travel policy\n\nStarting December 1, all business trips must be approved by your team leader at least ten business days before departure. Flights should be booked through our company travel agent, Skyway Travel, rather than directly with airlines. This will allow us to receive group discounts. Hotel costs will be reimbursed up to $150 per night; any amount above this limit must be paid by the employee. Receipts must be submitted within two weeks of returning. The full policy is available on the company intranet.',q:[
+q('What is the purpose of the memo?',['To announce changes to a travel policy','To introduce a new sales director','To advertise a travel agency','To report sales results'],0,'件名 Updated travel policy と Starting December 1 から、出張規定の変更のお知らせです。'),
+q('Why should employees book flights through Skyway Travel?',['It offers faster booking.','The company can receive discounts.','It provides free hotel rooms.','It is located near the office.'],1,'This will allow us to receive group discounts。'),
+q('What is true about hotel costs?',['They must be approved by the sales director.','They are paid in advance by the company.','They are reimbursed up to a certain amount.','They are not reimbursed.'],2,'reimbursed up to $150 per night ＝ 上限額まで払い戻される。承認するのは team leader で、ホテル代ではなく出張そのものです。')]},
+{tx:'Priya Nair [10:02 A.M.]\nHi team. The client wants the redesigned Web site to go live on May 1 instead of May 15.\n\nMark Olsen [10:03 A.M.]\nThat\'s two weeks earlier. The product pages aren\'t finished yet.\n\nPriya Nair [10:04 A.M.]\nI know. Could we postpone the blog section until after the launch?\n\nHana Sato [10:05 A.M.]\nThat would help. Then I could focus on the product photos this week.\n\nMark Olsen [10:06 A.M.]\nAnd I could ask Leo from the mobile team to help with testing.\n\nPriya Nair [10:07 A.M.]\nGood thinking. I\'ll tell the client the blog will follow later in May.',q:[
+q('What problem are the writers discussing?',['Some photos were lost.','A deadline has been moved up.','A team member is on vacation.','The Web site has stopped working.'],1,'公開日が5月15日から5月1日に前倒しになった（moved up）ことが話題です。'),
+q('What does Ms. Nair suggest?',['Hiring more designers','Asking for a larger budget','Removing the product pages','Delaying part of the project'],3,'Could we postpone the blog section ...? ＝ 一部（ブログ）を後回しにする。'),
+q('What will Ms. Sato most likely work on this week?',['Product photos','The blog section','Testing','A mobile app'],0,'I could focus on the product photos this week。'),
+q('At 10:07 A.M., what does Ms. Nair most likely mean when she writes, "Good thinking"?',['She thinks the client made a good decision.','She wants Ms. Sato to reconsider.','She likes Mr. Olsen\'s idea of getting help with testing.','She has already finished the testing.'],2,'直前の Mr. Olsen の「Leo にテストを手伝ってもらう」という提案に賛成しています。')]},
+{tx:'Dear Mr. Fischer,\n\nThank you for renewing your subscription to Business Monthly. Your new subscription will begin with the January issue and continue for 24 months.\n\nAs a thank-you, we have enclosed a voucher for a free ticket to our Small Business Forum, which will be held in Chicago on February 20. To reserve your seat, simply enter the code printed on the voucher on our Web site by January 31.\n\nSincerely,\nCustomer Relations\nBusiness Monthly',q:[
+q('How long will Mr. Fischer\'s subscription last?',['6 months','12 months','20 months','24 months'],3,'continue for 24 months。20 は フォーラムの日付（February 20）からのひっかけです。'),
+q('What must Mr. Fischer do to attend the forum?',['Call the magazine','Enter a code online','Pay a registration fee','Bring the voucher to Chicago'],1,'enter the code printed on the voucher on our Web site ＝ オンラインでコードを入力する。')]},
+{tx:'[Web page]\nWestbrook Business Center — Spring Workshops\n\n• Effective Presentations — March 5, 6:00–8:00 P.M., Room 101, Instructor: Carla Mendes, $45\n• Social Media Marketing — March 12, 6:00–8:00 P.M., Room 204, Instructor: Ben Ito, $50\n• Basic Bookkeeping — March 19, 6:00–8:30 P.M., Room 101, Instructor: Ruth Adler, $55\n• Negotiation Skills — March 26, 6:00–8:00 P.M., Room 204, Instructor: Carla Mendes, $45\n\nRegister online. Participants who sign up for two or more workshops receive $10 off the total.\n\n[E-mail]\nTo: registration@westbrookbc.example\nFrom: Daniel Moore\nDate: February 20\nSubject: Workshop registration\n\nHello,\nI own a small bakery and want to learn how to promote my shop online, so I have already registered for that workshop. I would also like to add the workshop on keeping financial records. Could you add it to my registration?\nAlso, is there parking near the building? I will be driving straight from work.\n\nThank you,\nDaniel Moore',q:[
+q('What is indicated about the workshops?',['They are taught online.','They are free for members.','They last three hours.','They all start at the same time.'],3,'どのワークショップも 6:00 P.M. 開始です。長さは2〜2.5時間なので (C) は不正解。'),
+q('Who teaches the workshop Mr. Moore has already registered for?',['Carla Mendes','Ben Ito','Ruth Adler','Daniel Moore'],1,'「店をオンラインで宣伝したい」＝ Social Media Marketing。講師は Ben Ito です（2文書の読み合わせ）。'),
+q('Which workshop does Mr. Moore want to add?',['Effective Presentations','Social Media Marketing','Basic Bookkeeping','Negotiation Skills'],2,'keeping financial records（帳簿をつけること）＝ Bookkeeping。'),
+q('How much will Mr. Moore most likely pay in total?',['$95','$100','$105','$110'],0,'$50 + $55 = $105 から、2つ以上の申込割引 $10 を引いて $95。'),
+q('What does Mr. Moore ask about?',['The length of a workshop','Changing an instructor','Parking near the building','Paying online'],2,'is there parking near the building? と聞いています。')]},
+{tx:'[Announcement]\nNorthern Tech Expo 2027\nApril 8–10, Halvorsen Convention Center, Oslo\n\nMore than 200 companies will exhibit their latest products. Keynote speeches will be given each morning at 9:00 in Hall A.\n\nEarly registration (by March 1): €120 for all three days\nRegular registration: €160 for all three days\nOne-day pass: €70\n\n[E-mail]\nFrom: Mei Lin\nTo: Expo Registration\nDate: February 25\nSubject: My registration\n\nHello,\nI have just registered to attend all three days of the Expo. I am especially looking forward to Dr. Anders Holm\'s keynote speech on April 9, as his research on battery technology is closely related to my company\'s work. Could you tell me whether lunch is included in the registration?\n\nMei Lin\n\n[Notice]\nSchedule Update — Northern Tech Expo\n\nBecause of a flight delay, Dr. Anders Holm\'s keynote speech has been moved from April 9 to April 10 (9:00 A.M., Hall A). Dr. Sofia Berg\'s talk on smart cities, originally planned for April 10, will now take place on April 9.\n\nLunch is not included in registration, but meals can be purchased at the center\'s food court.',q:[
+q('What is NOT mentioned in the announcement?',['The number of exhibitors','The registration fees','The time of the keynote speeches','The cost of parking'],3,'NOT問題。出展社数・料金・基調講演の時刻は書かれていますが、駐車料金は書かれていません。'),
+q('How much did Ms. Lin most likely pay?',['€70','€120','€160','€210'],1,'3日間の参加で、登録日は2月25日（3月1日までの早期登録）なので €120。'),
+q('What field does Ms. Lin\'s company most likely work in?',['Battery technology','Urban planning','Food service','Travel'],0,'Dr. Holm の電池技術の研究が my company\'s work と深く関係している、と書いています。'),
+q('When will Ms. Lin most likely hear Dr. Holm\'s speech?',['On April 8','On April 9','On April 10','She will not be able to hear it.'],2,'お知らせで4月10日に変更。Ms. Lin は3日間とも参加するので聞けます（3文書の読み合わせ）。'),
+q('What is indicated about lunch?',['It is served in Hall A.','It must be paid for separately.','It is included in early registration.','It is provided only on April 10.'],1,'Lunch is not included ... meals can be purchased ＝ 別料金。')]},
+{tx:'[Job posting]\nLindqvist Furniture is seeking a Customer Service Supervisor for its Riverside store.\n\nRequirements:\n• At least three years of customer service experience, including at least one year in a supervisory role\n• Availability to work weekends\n• Knowledge of inventory software (preferred)\n\nApplications must be received by May 15. Send a résumé and cover letter to hiring@lindqvist.example.\n\n[E-mail]\nTo: hiring@lindqvist.example\nFrom: Julia Park\nDate: May 10\nSubject: Customer Service Supervisor\n\nDear Hiring Manager,\nI am applying for the Customer Service Supervisor position. I have worked at Homeway Interiors for four years, the last eighteen months as assistant manager of the customer service team. I am available to work any day of the week. Although I have not used inventory software before, I learn new systems quickly. My résumé is attached.\n\nJulia Park\n\n[E-mail]\nTo: Julia Park\nFrom: Lindqvist Furniture\nDate: May 20\nSubject: Interview invitation\n\nDear Ms. Park,\nThank you for your application. We would like to invite you to an interview at our Riverside store on May 27 at 10:00 A.M. You will meet with the store manager, Olaf Berg, and our training coordinator, Nina Cruz. Ms. Cruz will also show you the inventory system we use. Please bring a copy of your résumé and a form of photo identification.',q:[
+q('What is a requirement for the position?',['A university degree','Experience with inventory software','Fluency in two languages','Availability on weekends'],3,'Availability to work weekends は必須。在庫ソフトの知識は preferred（あれば望ましい）なので必須ではありません。'),
+q('What is suggested about Ms. Park?',['She meets the supervisory experience requirement.','She currently works for Lindqvist Furniture.','She has used inventory software.','She missed the application deadline.'],0,'管理職経験18か月で「1年以上」を満たしています。応募は5月10日なので締切前です。'),
+q('In the second e-mail, the word "show" in paragraph 1, line 3, is closest in meaning to',['prove','appear','demonstrate','arrive'],2,'show you the inventory system ＝ システムを実際に見せて説明する ＝ demonstrate。'),
+q('Who will most likely help Ms. Park with the skill she lacks?',['Olaf Berg','Nina Cruz','A hiring manager at Homeway Interiors','A customer'],1,'Ms. Park は在庫ソフトの経験がなく、それを見せてくれるのは Nina Cruz です（2通目と3通目の読み合わせ）。'),
+q('What is Ms. Park asked to bring to the interview?',['Identification and a résumé','A reference letter','A sample of her work','A training certificate'],0,'a copy of your résumé and a form of photo identification。')]},
+{tx:'[Menu]\nBella Tavola Catering — Lunch Packages\n(Minimum order: 10 people)\n\nPackage A: Sandwiches, salad, cookies — $12 per person\nPackage B: Pasta, salad, bread, fruit — $15 per person\nPackage C: Grilled chicken, rice, vegetables, cake — $18 per person\n\nFree delivery within the city. Orders must be placed at least 48 hours in advance. Vegetarian options are available for all packages on request.\n\n[E-mail]\nTo: orders@bellatavola.example\nFrom: Rita Gomez, Carter & Hughes\nDate: January 6\nSubject: Lunch order\n\nWe would like to order lunch for our training day on Thursday, January 9, for 25 people. We would like a hot meal that includes pasta. Three of the participants are vegetarian. Please deliver to Carter & Hughes, 18 Main Street, by 11:45 A.M.\n\n[E-mail]\nTo: orders@bellatavola.example\nFrom: Rita Gomez, Carter & Hughes\nDate: January 10\nSubject: Thank you\n\nThank you for providing lunch yesterday. Everyone enjoyed the food, especially the vegetarian dishes, which several other staff members tried as well. The only issue was that the delivery arrived at 12:15, so we had to start our afternoon session late. We hope to order from you again for our event in March.',q:[
+q('What is indicated about Bella Tavola Catering?',['It charges a delivery fee.','It serves only vegetarian food.','It requires orders for at least ten people.','It is open only on weekends.'],2,'Minimum order: 10 people。市内配送は無料なので (A) は不正解です。'),
+q('Which package did Ms. Gomez most likely order?',['Package A','Package B','Package C','A custom package'],1,'「パスタを含む温かい食事」に当てはまるのは Package B です。'),
+q('How much did the order most likely cost?',['$300','$390','$450','$375'],3,'Package B（1人 $15）× 25人 ＝ $375。配送は無料です。'),
+q('What problem does Ms. Gomez mention?',['The food was cold.','Some dishes were missing.','The delivery was late.','The bill was incorrect.'],2,'11:45 までの依頼に対して 12:15 に到着しました。'),
+q('What is suggested about Ms. Gomez\'s order?',['It was placed with enough advance notice.','It was delivered to the wrong address.','It was later canceled.','It was for an event in March.'],0,'注文は1月6日、配達は1月9日なので、48時間前までという条件を満たしています（1通目のメールとメニューの読み合わせ）。')]}
+]}
+];
+
+const W=[
+['submit','動','提出する','Please submit the report by Friday.'],
+['deadline','名','締め切り','The deadline for applications is May 15.'],
+['budget','名','予算','The project was finished under budget.'],
+['expense','名','費用、経費','Keep receipts for all travel expenses.'],
+['reimburse','動','払い戻す','The company will reimburse your hotel costs.'],
+['receipt','名','領収書','Please attach the receipt to the form.'],
+['invoice','名','請求書','We will send you the invoice next week.'],
+['estimate','名','見積もり','Could you send us a cost estimate?'],
+['quote','名','見積額','The supplier gave us a quote of $500.'],
+['purchase','動・名','購入する／購入','Thank you for your recent purchase.'],
+['shipment','名','発送（品）','The shipment was delayed by two days.'],
+['delivery','名','配達','Delivery is free for orders over $50.'],
+['inventory','名','在庫','We need to check our inventory.'],
+['supplier','名','供給業者、仕入れ先','We changed suppliers last year.'],
+['warehouse','名','倉庫','The boxes are stored in the warehouse.'],
+['refund','名','返金','You can request a full refund within 30 days.'],
+['warranty','名','保証','The printer comes with a two-year warranty.'],
+['complaint','名','苦情','We received a complaint about the noise.'],
+['representative','名','担当者、代表者','A sales representative will call you.'],
+['applicant','名','応募者','All applicants must have a driver\'s license.'],
+['candidate','名','候補者','We interviewed three candidates.'],
+['résumé','名','履歴書','Please send your résumé by e-mail.'],
+['qualification','名','資格、能力','She has the right qualifications for the job.'],
+['requirement','名','必要条件','Weekend work is a requirement.'],
+['hire','動','雇う','The company plans to hire 300 workers.'],
+['recruit','動','採用する','We are recruiting new engineers.'],
+['promote','動','昇進させる、宣伝する','She was promoted to director.'],
+['promotion','名','昇進、販売促進','He received a promotion last month.'],
+['supervisor','名','上司、監督者','Ask your supervisor for approval.'],
+['colleague','名','同僚','I\'ll forward the notes to my colleague.'],
+['personnel','名','人員、人事部','Personnel changes will be announced soon.'],
+['approve','動','承認する','The plan was approved by the board.'],
+['approval','名','承認','Business trips require your manager\'s approval.'],
+['policy','名','方針、規定','Please read the new travel policy.'],
+['regulation','名','規則','Safety regulations must be followed.'],
+['mandatory','形','必須の、義務の','Attendance is mandatory for all staff.'],
+['attend','動','出席する','Ms. Grant will attend the conference.'],
+['attendance','名','出席（者数）','Attendance was higher than expected.'],
+['conference','名','会議','The conference will be held in Oslo.'],
+['agenda','名','議題','The first item on the agenda is the budget.'],
+['postpone','動','延期する','The meeting was postponed until Friday.'],
+['reschedule','動','予定を変更する','Please call us if you need to reschedule.'],
+['appointment','名','（面会の）予約、約束','I have a dental appointment at three.'],
+['reservation','名','（席・部屋の）予約','I have a reservation under the name Kim.'],
+['available','形','利用できる、手が空いている','The room is available on Monday.'],
+['venue','名','会場','The venue can hold 200 guests.'],
+['accommodate','動','収容する、対応する','The hall can accommodate 80 people.'],
+['capacity','名','収容能力、定員','The room has a capacity of 20 people.'],
+['renovate','動','改装する','The lobby is being renovated.'],
+['renovation','名','改装','The renovation will take six weeks.'],
+['construction','名','建設、工事','Construction will begin in September.'],
+['facility','名','施設','The facility is open 24 hours a day.'],
+['maintenance','名','保守、メンテナンス','The store will close early for maintenance.'],
+['inspection','名','点検、検査','The elevators will undergo an inspection.'],
+['equipment','名','機器、設備','Some equipment is not working.'],
+['install','動','設置する、インストールする','Install the software before Monday.'],
+['replace','動','交換する、取り替える','The projector was replaced last week.'],
+['repair','名・動','修理／修理する','The repair is covered by the warranty.'],
+['tenant','名','入居者、テナント','Tenants are asked to use Elevator C.'],
+['property','名','不動産、物件','The property is close to the station.'],
+['commute','動','通勤する','Many employees commute by train.'],
+['departure','名','出発','Check in two hours before departure.'],
+['itinerary','名','旅程（表）','I\'ll e-mail you the travel itinerary.'],
+['destination','名','目的地','Our final destination is Boston.'],
+['fare','名','運賃','The bus fare is two dollars.'],
+['brochure','名','パンフレット','Pick up a brochure at our booth.'],
+['exhibit','動・名','展示する／展示（品）','Over 200 companies will exhibit.'],
+['launch','動・名','発売する、開始する／発売','The product was launched in March.'],
+['campaign','名','（宣伝）キャンペーン','The ad campaign was a great success.'],
+['advertise','動','広告する','We advertise mainly on social media.'],
+['survey','名','（アンケート）調査','The survey results were positive.'],
+['revenue','名','収益、売上','Revenue rose by 10 percent.'],
+['profit','名','利益','Profits increased significantly this year.'],
+['decline','動','減少する、断る','Sales declined last quarter.'],
+['significantly','副','大幅に','Costs rose significantly.'],
+['approximately','副','約、およそ','The factory will create approximately 300 jobs.'],
+['currently','副','現在','The room is currently being cleaned.'],
+['previously','副','以前に','He previously worked in Tokyo.'],
+['immediately','副','直ちに','Please reply immediately.'],
+['efficient','形','効率的な','The new system is more efficient.'],
+['convenient','形','便利な、都合のよい','Is Tuesday convenient for you?'],
+['valid','形','有効な','You need a valid ID badge to enter.'],
+['eligible','形','資格のある','Members are eligible for a discount.'],
+['exceptional','形','非常に優れた','The store is known for its exceptional service.'],
+['temporary','形','一時的な','This is only a temporary solution.'],
+['annual','形','年1回の、年次の','The annual meeting is held in June.'],
+['quarterly','形','四半期の','The quarterly results look good.'],
+['deposit','名','保証金、手付金','A $100 deposit is required.'],
+['subscription','名','定期購読、会員契約','Thank you for renewing your subscription.'],
+['renew','動','更新する','You can renew your card online.'],
+['expire','動','期限が切れる','Your membership expires in May.'],
+['register','動','登録する、申し込む','Register by August 25 to get a discount.'],
+['registration','名','登録、申し込み','Registration closes on Friday.'],
+['confirm','動','確認する','Please confirm your attendance by e-mail.'],
+['notify','動','知らせる','We will notify you when your order ships.'],
+['inquiry','名','問い合わせ','Thank you for your inquiry.'],
+['assist','動','手伝う、支援する','Our staff will be happy to assist you.'],
+['ensure','動','確実にする','Please ensure that the door is locked.'],
+['reference','名','推薦状、参照','Please provide two references.'],
+['proposal','名','提案（書）','The board will discuss the proposal.']
+].map(([en,pos,ja,ex])=>({en,pos,ja,ex}));
+const I=[
+['be responsible for','～を担当している、～に責任がある','Ms. Yamada is responsible for training new staff.'],
+['in advance','前もって','Please book at least two weeks in advance.'],
+['on behalf of','～を代表して、～の代わりに','She attended the event on behalf of the CEO.'],
+['ahead of schedule','予定より早く','The project was finished ahead of schedule.'],
+['behind schedule','予定より遅れて','The construction is behind schedule.'],
+['under budget','予算内で','We completed the work under budget.'],
+['out of stock','在庫切れで','The desk organizers are out of stock.'],
+['in stock','在庫があって','Do you have this model in stock?'],
+['run out of','～を切らす、使い果たす','We\'ve run out of brochures.'],
+['take place','行われる、開催される','The forum will take place in Chicago.'],
+['sign up for','～に申し込む、登録する','I signed up for two workshops.'],
+['fill out','（書類に）記入する','Please fill out this form.'],
+['hand in','提出する','Hand in your report by Friday.'],
+['look forward to','～を楽しみにする','I look forward to meeting you.'],
+['be in charge of','～を担当している','Who is in charge of the project?'],
+['due to','～が原因で','The flight was delayed due to bad weather.'],
+['in spite of','～にもかかわらず','In spite of the rain, the event was held.'],
+['as scheduled','予定どおりに','The concert was held as scheduled.'],
+['at no charge','無料で','We will upgrade your shipping at no charge.'],
+['free of charge','無料で','Parking is free of charge for guests.'],
+['on request','要望に応じて','Vegetarian meals are available on request.'],
+['in addition','さらに、加えて','In addition, members get early access to sales.'],
+['as well as','～だけでなく…も','We sell tools as well as garden supplies.'],
+['instead of','～の代わりに','Use the west lot instead of the east lot.'],
+['according to','～によると','According to the report, sales rose.'],
+['in terms of','～の点で','In terms of price, Plan B is better.'],
+['be eligible for','～の資格がある','Members are eligible for a 15% discount.'],
+['be familiar with','～に詳しい','Are you familiar with this software?'],
+['be aware of','～に気づいている、知っている','Please be aware of the new rules.'],
+['comply with','（規則など）に従う','All staff must comply with safety rules.'],
+['deal with','～に対処する、～を扱う','She deals with customer complaints.'],
+['carry out','実行する、実施する','We will carry out a customer survey.'],
+['set up','設置する、立ち上げる','We need to set up the display by Monday.'],
+['put off','延期する','Let\'s put off the meeting until Monday.'],
+['call off','中止する','The outdoor event was called off.'],
+['turn down','断る','He turned down the job offer.'],
+['come up with','（案を）思いつく','She came up with a great idea.'],
+['figure out','理解する、解決策を見つける','We need to figure out the cause.'],
+['pick up','受け取る、（車で）迎えに行く','Could you pick up the brochures?'],
+['drop off','届ける、（車から）降ろす','I\'ll drop off the package at noon.'],
+['go over','見直す、確認する','Let\'s go over the contract once more.'],
+['get in touch with','～と連絡をとる','Please get in touch with Mr. Brooks.'],
+['keep track of','～を記録する、把握する','This app keeps track of your expenses.'],
+['make sure','確かめる、必ず～する','Make sure the lights are off.'],
+['take advantage of','～を利用する','Take advantage of this special offer.'],
+['a wide range of','幅広い～','We offer a wide range of products.'],
+['at least','少なくとも','Book at least ten days before departure.'],
+['no later than','遅くとも～までに','Submit it no later than May 15.'],
+['be about to','まさに～しようとしている','The meeting is about to start.'],
+['on time','時間どおりに','The train arrived on time.']
+].map(([en,ja,ex])=>({en,pos:'熟語',ja,ex}));
+const NT={"submit": "submit A to B「AをBに提出する」。名詞は submission。hand in、turn in と同じ意味。", "deadline": "meet a deadline「締め切りに間に合わせる」。締め切りを表す前置詞は by（until ではない）。", "budget": "under budget（予算内で）、over budget（予算超過）。動詞で「予算を組む」の意味もあります。", "expense": "travel expenses（出張費）のように複数形でよく使います。形容詞 expensive と区別しましょう。", "reimburse": "reimburse A for B「AにBの費用を払い戻す」。名詞は reimbursement。経費精算の文書で頻出。", "receipt": "p は発音しません（リシート）。「受領」の意味もあり、upon receipt of ～ は「～を受け取り次第」。", "invoice": "bill とほぼ同じ意味。Part 7 の支払い関係の文書でよく出ます。", "estimate": "名詞の発音は「エスティメット」、動詞は「エスティメイト」。estimated delivery は「配達予定」。", "quote": "「見積額」。動詞では「引用する、見積もる」。quotation とも言います。", "purchase": "buy より改まった語。proof of purchase は「購入証明」。", "shipment": "ship（発送する）の名詞形。shipping は「発送すること、送料」。", "delivery": "deliver の名詞形。free delivery（配送無料）、delivery date（配達日）。", "inventory": "stock とほぼ同じ。take inventory は「棚卸しをする」。", "supplier": "supply（供給する）側の会社。vendor も似た意味です。", "warehouse": "storage facility（保管施設）と言い換えられることがあります。", "refund": "動詞でも「返金する」。full refund（全額返金）、refund policy（返金規定）。", "warranty": "under warranty は「保証期間中で」。guarantee とほぼ同じ。", "complaint": "complain about ～ の名詞形。file a complaint は「苦情を申し立てる」。", "representative": "sales representative（営業担当）、customer service representative（顧客窓口）。略して rep。", "applicant": "apply for ～（～に応募する）をする人。application は「応募（書類）」。", "candidate": "選考の対象になっている人。選挙の「候補者」にも使います。", "résumé": "resume とも書きます。CV とも言い、cover letter（添え状）とセットでよく出ます。", "qualification": "be qualified for ～ で「～の資格がある」。資格だけでなく必要な能力・経験も含みます。", "requirement": "require（必要とする）の名詞形。meet the requirements は「条件を満たす」。", "hire": "employ とほぼ同じ。名詞の new hire は「新入社員」。", "recruit": "名詞で「新入社員」。recruitment は「採用活動」。", "promote": "「昇進させる」と「宣伝する」の2つの意味に注意。be promoted to ～ は「～に昇進する」。", "promotion": "「昇進」と「販売促進」。どちらの意味かは文脈で判断します。", "supervisor": "直属の上司。supervise（監督する）、supervisory（監督の）。", "colleague": "coworker とほぼ同じで、同じ職場の仲間。", "personnel": "「人員・職員」（全体）と「人事部」。personal（個人の）とつづりが似ているので注意。", "approve": "ビジネスでは他動詞で「承認する」。approve of ～ は「～に賛成する」。", "approval": "approve の名詞形。get approval は「承認を得る」。", "policy": "refund policy（返品規定）、company policy（社内規定）のように使います。", "regulation": "rule より公式な規則。comply with regulations は「規則に従う」。", "mandatory": "required、compulsory とほぼ同じ。反対は optional（任意の）。", "attend": "他動詞なので前置詞なしで attend the meeting。attend to ～ は「～に対応する」。", "attendance": "「出席」と「出席者数」。attendant は「係員」。", "conference": "大規模な会議・協議会。conference room は「会議室」。", "agenda": "on the agenda で「議題に上っている」。会議の案内メールで頻出。", "postpone": "put off と同じ意味。cancel（中止）とは違うので注意。", "reschedule": "日時を変えること。前倒しにも延期にも使えます。", "appointment": "人と会う約束や病院などの予約。レストランやホテルは reservation。", "reservation": "make a reservation で「予約する」。book と同じ意味。", "available": "物なら「利用できる」、人なら「手が空いている」。名詞は availability（空き状況）。", "venue": "イベントの会場。location とほぼ同じ。イベント告知で頻出。", "accommodate": "「収容する」のほか「（要望に）対応する」。accommodations は「宿泊施設」。", "capacity": "seating capacity（座席数）。at full capacity は「満員で、フル稼働で」。", "renovate": "古い建物を改装すること。be being renovated（改装中）の形が頻出。", "renovation": "renovate の名詞形。under renovation は「改装中」。", "construction": "under construction は「工事中」。動詞は construct。", "facility": "特定の目的のための施設。複数形 facilities で「設備」の意味も。", "maintenance": "maintain（維持する）の名詞形。つづりに注意（maintainance ではない）。", "inspection": "inspect（検査する）、inspector（検査官）。undergo an inspection は「点検を受ける」。", "equipment": "数えられない名詞なので s も an も付きません。1つは a piece of equipment。", "install": "機器の設置にもソフトのインストールにも使います。名詞は installation。", "replace": "replace A with B「AをBに取り替える」。replacement は「交換品、後任者」。", "repair": "under repair は「修理中」。fix とほぼ同じ。", "tenant": "建物を借りている人・会社。landlord（家主）と対でよく出ます。", "property": "「不動産」と「所有物」。real estate とほぼ同じ。", "commute": "名詞で「通勤」。commuter は「通勤者」。", "departure": "depart（出発する）の名詞形。反対は arrival。", "itinerary": "出張・旅行の予定表。旅行関係の Part 7 で頻出。", "destination": "目的地、行き先。a popular tourist destination は「人気の観光地」。", "fare": "乗り物の運賃。fee（手数料）、charge（料金）と使い分けます。", "brochure": "宣伝用の冊子。pamphlet、leaflet、flyer も似た意味。", "exhibit": "名詞では「展示品」。exhibition（展示会）、exhibitor（出展者）。", "launch": "新製品の発売や事業の開始。product launch は「製品発売」。", "campaign": "宣伝活動。advertising campaign、marketing campaign の形で出ます。", "advertise": "名詞は advertisement（ad）。advertise for ～ は「～を募集する」。", "survey": "conduct a survey で「調査を行う」。questionnaire（アンケート用紙）も関連語。", "revenue": "売上による収入。profit（利益）は revenue から費用を引いたものです。", "profit": "形容詞は profitable（利益になる）。make a profit は「利益を出す」。", "decline": "「減少する」（＝decrease）と「断る」（＝turn down）の2つの意味があります。", "significantly": "増減の大きさを表す副詞として頻出。considerably、substantially も同じ意味。", "approximately": "about、around と同じ意味で、数字の前に置きます。", "currently": "is currently being renovated（現在改装中）のように進行形と一緒によく出ます。", "previously": "以前に。形容詞は previous（前の）。", "immediately": "right away、at once と同じ。形容詞は immediate（即時の）。", "efficient": "名詞は efficiency（効率）。effective（効果的な）と区別しましょう。", "convenient": "人を主語にしません（×I am convenient）。It is convenient for me が正しい形です。", "valid": "反対は invalid、expired（期限切れの）。valid until ～ は「～まで有効」。", "eligible": "be eligible for ～（名詞）／be eligible to do（動詞）で「～の資格がある」。", "exceptional": "exception（例外）の形容詞ですが、「非常に優れた」の意味でよく使われます。", "temporary": "反対は permanent（永久の）。temporary worker は「臨時職員」。", "annual": "annual report は「年次報告書」。副詞は annually（毎年）。", "quarterly": "quarter（四半期）の形容詞。quarterly report は「四半期報告」。", "deposit": "「保証金・手付金」のほか「預金（する）」の意味も。security deposit（敷金）。", "subscription": "subscribe to ～ で「～を定期購読する」。", "renew": "名詞は renewal（更新）。renew a contract は「契約を更新する」。", "expire": "expiration date は「有効期限」。", "register": "register for ～ で「～に申し込む」。sign up for と同じ。", "registration": "registration fee（登録料）、early registration（早期申込）。", "confirm": "名詞は confirmation（確認）。order confirmation は「注文確認書」。", "notify": "notify 人 of ～「人に～を知らせる」。名詞は notification（通知）。", "inquiry": "inquire about ～ で「～について問い合わせる」。enquiry とも書きます。", "assist": "assist 人 with ～「人の～を手伝う」。名詞は assistance（支援）。", "ensure": "ensure that ～ の形で、make sure と同じ意味。assure（人に請け合う）と区別。", "reference": "採用では「推薦状・推薦者」。for future reference は「今後の参考に」。", "proposal": "propose（提案する）の名詞形。submit a proposal は「提案書を出す」。", "be responsible for": "後ろは名詞か動名詞（～ing）。名詞は responsibility（責任）。", "in advance": "ahead of time と同じ。「2日前に」は two days in advance。", "on behalf of": "手紙やスピーチで頻出。「～を代表して」と「～の代わりに」の両方の意味があります。", "ahead of schedule": "反対は behind schedule。on schedule は「予定どおり」。", "behind schedule": "遅れているという状態。be delayed とも言い換えられます。", "under budget": "反対は over budget。within budget も「予算内で」。", "out of stock": "反対は in stock。sold out（売り切れ）も似た意味です。", "in stock": "在庫があること。have ～ in stock の形でよく使います。", "run out of": "be out of ～ は「切らしている」（状態）、run out of は「切らす」（変化）。", "take place": "be held と同じ意味。受け身にはしません（×is taken place）。", "sign up for": "register for と同じ。名詞は sign-up。", "fill out": "complete a form とも言います。fill in もほぼ同じ意味。", "hand in": "submit、turn in と同じ意味です。", "look forward to": "to の後ろは名詞か動名詞（～ing）。×look forward to meet は間違い。", "be in charge of": "be responsible for とほぼ同じ。person in charge は「担当者」。", "due to": "because of と同じで、後ろは名詞。due には「期限が来る」の意味もあります（be due Friday）。", "in spite of": "despite と同じ意味。despite には of を付けません。", "as scheduled": "as planned とも言います。予定変更の文書でよく出ます。", "at no charge": "free of charge、at no cost と同じ意味です。", "free of charge": "complimentary（無料の）も頻出の言い換えです。", "on request": "upon request とも言います。「依頼があれば提供する」という意味。", "in addition": "文頭で情報を付け加えます。in addition to ～ は「～に加えて」。", "as well as": "A as well as B は「BだけでなくAも」。not only B but also A と同じ。", "instead of": "後ろは名詞か動名詞。文末の instead は「その代わりに」（副詞）。", "according to": "情報の出どころを示します。「～に従って」の意味もあります。", "in terms of": "比べる観点を示します。in terms of cost は「費用の点で」。", "be eligible for": "後ろは名詞。動詞なら be eligible to do。", "be familiar with": "主語は人。物を主語にするなら be familiar to 人。", "be aware of": "注意を促す文書で頻出。名詞は awareness（認識）。", "comply with": "follow、obey、adhere to と同じ意味。名詞は compliance（法令順守）。", "deal with": "handle と同じ意味。dealer（販売業者）とは別の意味です。", "carry out": "conduct、perform と同じ。実験・調査・計画などを目的語にとります。", "set up": "機器の設置、会議の準備、会社の設立などに広く使います。", "put off": "postpone と同じ。目的語が代名詞なら put it off の語順になります。", "call off": "cancel と同じ。put off（延期）と混同しないように。", "turn down": "decline、reject と同じ。「（音量を）下げる」の意味もあります。", "come up with": "think of とほぼ同じ。idea、plan、solution などを目的語にとります。", "figure out": "問題や答えを「考えて分かる」。work out とも言います。", "pick up": "「受け取る」「迎えに行く」「拾い上げる」など意味の多い句動詞です。", "drop off": "pick up と対でよく出ます。「届けて置いていく、降ろす」。", "go over": "review、check と同じ意味。書類の見直しでよく出ます。", "get in touch with": "contact と同じ。keep in touch は「連絡を取り合う」。", "keep track of": "monitor に近い意味。lose track of は「わからなくなる」。", "make sure": "ensure と同じ。make sure (that) ～ の形で使います。", "take advantage of": "「利用する」が基本の意味。人に使うと「つけ込む」の意味にもなります。", "a wide range of": "a variety of とほぼ同じ。後ろは複数名詞です。", "at least": "最低限を示します。反対は at most（多くても）。", "no later than": "by とほぼ同じ意味で、締め切りを強調します。", "be about to": "後ろは動詞の原形。「まさに～しようとしている」。", "on time": "「時間どおりに」。in time は「間に合って」なので区別しましょう。"};
+[...W,...I].forEach(it=>{it.note=NT[it.en]||''});
+const XT={"submit": ["金曜日までに報告書を提出してください。", "Applications must be submitted to the HR office.", "応募書類は人事部に提出しなければなりません。"], "deadline": ["応募の締め切りは5月15日です。", "We worked late to meet the deadline.", "締め切りに間に合わせるため遅くまで働きました。"], "budget": ["プロジェクトは予算内で終わりました。", "The renovation went over budget.", "改装は予算を超えてしまいました。"], "expense": ["出張費の領収書はすべて保管してください。", "He attended the course at his own expense.", "彼は自費でその講座に出席しました。"], "reimburse": ["会社がホテル代を払い戻します。", "We will reimburse you for the taxi fare.", "タクシー代をあなたに払い戻します。"], "receipt": ["用紙に領収書を添付してください。", "Payment is due upon receipt of the invoice.", "支払いは請求書を受け取り次第となります。"], "invoice": ["来週、請求書をお送りします。", "Please pay the invoice within 30 days.", "請求書の金額を30日以内にお支払いください。"], "estimate": ["費用の見積もりを送っていただけますか。", "The estimated delivery date is May 3.", "配達予定日は5月3日です。"], "quote": ["仕入れ先は500ドルの見積額を出しました。", "Could you give us a quote for 100 chairs?", "椅子100脚の見積もりをいただけますか。"], "purchase": ["先日はご購入ありがとうございました。", "Keep your receipt as proof of purchase.", "購入証明としてレシートを保管してください。"], "shipment": ["発送が2日遅れました。", "Shipping is free for members.", "会員は送料無料です。"], "delivery": ["50ドル以上のご注文は配送無料です。", "The delivery date has been changed to Friday.", "配達日は金曜日に変更されました。"], "inventory": ["在庫を確認する必要があります。", "The store will close early to take inventory.", "その店は棚卸しのため早く閉店します。"], "supplier": ["昨年、仕入れ先を変えました。", "Our main supplier is based in Vietnam.", "当社の主な仕入れ先はベトナムにあります。"], "warehouse": ["箱は倉庫に保管されています。", "The goods are kept in a storage facility near the port.", "商品は港の近くの保管施設に置かれています。"], "refund": ["30日以内なら全額返金を求めることができます。", "We will refund the full amount.", "全額を返金いたします。"], "warranty": ["このプリンターには2年保証が付いています。", "The repair is free because the laptop is still under warranty.", "ノートパソコンはまだ保証期間中なので修理は無料です。"], "complaint": ["騒音についての苦情を受けました。", "Several customers complained about the long wait.", "何人かの客が長い待ち時間に苦情を言いました。"], "representative": ["営業担当者からお電話します。", "Please speak to a customer service representative.", "顧客窓口の担当者にお話しください。"], "applicant": ["応募者は全員、運転免許が必要です。", "She applied for the manager position.", "彼女はマネージャー職に応募しました。"], "candidate": ["3人の候補者を面接しました。", "The best candidate will be contacted next week.", "最も適した候補者には来週連絡します。"], "résumé": ["履歴書をメールで送ってください。", "Please send a résumé and a cover letter.", "履歴書と添え状を送ってください。"], "qualification": ["彼女はその仕事にふさわしい資格を持っています。", "He is well qualified for the position.", "彼はその職に十分ふさわしい能力があります。"], "requirement": ["週末勤務は必要条件です。", "All applicants must meet the requirements.", "応募者は全員、条件を満たす必要があります。"], "hire": ["その会社は300人の従業員を雇う予定です。", "Our new hires will start on April 1.", "新入社員は4月1日から勤務します。"], "recruit": ["新しいエンジニアを採用しています。", "The recruitment process takes about a month.", "採用の手続きは約1か月かかります。"], "promote": ["彼女は取締役に昇進しました。", "The company promoted its new phone on TV.", "その会社はテレビで新しい携帯電話を宣伝しました。"], "promotion": ["彼は先月昇進しました。", "The summer promotion includes 20% off all shoes.", "夏の販売促進では靴が全品20%引きになります。"], "supervisor": ["上司に承認をもらってください。", "Ms. Lee supervises a team of ten people.", "リーさんは10人のチームを監督しています。"], "colleague": ["メモを同僚に転送します。", "I asked a coworker to check my report.", "同僚に報告書を確認してもらいました。"], "personnel": ["人事異動はまもなく発表されます。", "Please contact the personnel department about your contract.", "契約については人事部に連絡してください。"], "approve": ["その計画は取締役会で承認されました。", "Most employees approve of the new schedule.", "ほとんどの社員が新しい勤務表に賛成しています。"], "approval": ["出張には上司の承認が必要です。", "We finally got approval for the project.", "ようやくプロジェクトの承認を得ました。"], "policy": ["新しい出張規定を読んでください。", "Please read our refund policy before ordering.", "ご注文前に返金規定をお読みください。"], "regulation": ["安全規則を守らなければなりません。", "All factories must comply with the new regulations.", "すべての工場が新しい規則に従わなければなりません。"], "mandatory": ["出席は全スタッフ必須です。", "The training is mandatory, but the dinner is optional.", "研修は必須ですが、夕食会は任意です。"], "attend": ["グラントさんがその会議に出席します。", "A staff member will attend to your request shortly.", "まもなく係の者がご要望に対応します。"], "attendance": ["出席者数は予想より多かったです。", "Please ask the parking attendant for help.", "駐車場の係員に手助けを頼んでください。"], "conference": ["会議はオスロで開催されます。", "The meeting will be held in Conference Room B.", "会議は会議室Bで行われます。"], "agenda": ["議題の最初の項目は予算です。", "The new office layout is on the agenda for Friday.", "新しいオフィスの配置は金曜日の議題に入っています。"], "postpone": ["会議は金曜日まで延期されました。", "The event was postponed, not canceled.", "そのイベントは中止ではなく延期されました。"], "reschedule": ["予定の変更が必要な場合はお電話ください。", "The meeting has been rescheduled for an earlier date.", "会議はもっと早い日に変更されました。"], "appointment": ["3時に歯医者の予約があります。", "I made a reservation at an Italian restaurant.", "イタリアンレストランを予約しました。"], "reservation": ["キムという名前で予約しています。", "You can book a table online.", "オンラインで席を予約できます。"], "available": ["その部屋は月曜日に使えます。", "Please check room availability on our Web site.", "部屋の空き状況はウェブサイトでご確認ください。"], "venue": ["その会場は200人を収容できます。", "The venue for the party has not been decided.", "パーティーの会場はまだ決まっていません。"], "accommodate": ["そのホールは80人を収容できます。", "We will do our best to accommodate your request.", "ご要望にお応えできるよう最善を尽くします。"], "capacity": ["その部屋の定員は20人です。", "The factory is running at full capacity.", "その工場はフル稼働しています。"], "renovate": ["ロビーは改装中です。", "The museum is being renovated and will reopen in May.", "美術館は改装中で、5月に再開します。"], "renovation": ["改装には6週間かかります。", "The east wing is under renovation.", "東棟は改装中です。"], "construction": ["工事は9月に始まります。", "The new bridge is still under construction.", "新しい橋はまだ工事中です。"], "facility": ["その施設は24時間開いています。", "The hotel's facilities include a pool and a gym.", "そのホテルの設備にはプールとジムがあります。"], "maintenance": ["その店はメンテナンスのため早く閉まります。", "The building is well maintained.", "その建物はよく手入れされています。"], "inspection": ["エレベーターは点検を受けます。", "An inspector will visit the factory next week.", "来週、検査官が工場を訪れます。"], "equipment": ["いくつかの機器が動いていません。", "Each room has a new piece of equipment.", "各部屋に新しい機器が1台あります。"], "install": ["月曜日までにソフトをインストールしてください。", "The installation of the new machines took two days.", "新しい機械の設置には2日かかりました。"], "replace": ["プロジェクターは先週交換されました。", "We replaced the old carpet with wooden floors.", "古いカーペットを木の床に取り替えました。"], "repair": ["その修理は保証の対象です。", "The elevator is under repair today.", "エレベーターは今日修理中です。"], "tenant": ["入居者はエレベーターCを使うよう求められています。", "The landlord asked the tenants to move their cars.", "家主は入居者に車を移動するよう頼みました。"], "property": ["その物件は駅の近くです。", "She works for a real estate company.", "彼女は不動産会社で働いています。"], "commute": ["多くの社員が電車で通勤しています。", "My commute takes about an hour.", "私の通勤は約1時間かかります。"], "departure": ["出発の2時間前にチェックインしてください。", "Departure and arrival times are shown on the board.", "出発と到着の時刻は掲示板に出ています。"], "itinerary": ["旅程表をメールでお送りします。", "Your itinerary includes a visit to the Paris office.", "あなたの旅程にはパリ支社の訪問が含まれています。"], "destination": ["最終目的地はボストンです。", "Kyoto is a popular tourist destination.", "京都は人気の観光地です。"], "fare": ["バスの運賃は2ドルです。", "There is a small fee for late registration.", "締め切り後の登録には少額の手数料がかかります。"], "brochure": ["ブースでパンフレットを受け取ってください。", "Flyers were handed out at the station.", "駅でチラシが配られました。"], "exhibit": ["200社以上が出展します。", "The exhibition will run until June 30.", "その展示会は6月30日まで開かれます。"], "launch": ["その製品は3月に発売されました。", "The product launch was a huge success.", "製品の発売は大成功でした。"], "campaign": ["その広告キャンペーンは大成功でした。", "The marketing campaign targets young people.", "そのマーケティングキャンペーンは若者向けです。"], "advertise": ["主にSNSで広告を出しています。", "The bakery is advertising for a part-time worker.", "そのパン屋はアルバイトを募集しています。"], "survey": ["調査結果は好意的でした。", "We conducted a survey of 500 customers.", "500人の顧客を対象に調査を行いました。"], "revenue": ["収益は10%増えました。", "Revenue was high, but profits were low because of costs.", "売上は多かったが、費用のため利益は少なかった。"], "profit": ["今年は利益が大幅に増えました。", "The new store became profitable in its first year.", "新店舗は1年目で黒字になりました。"], "decline": ["先四半期は売上が減少しました。", "She declined the invitation politely.", "彼女は招待を丁寧に断りました。"], "significantly": ["費用は大幅に上がりました。", "The number of visitors increased considerably.", "訪問者数はかなり増えました。"], "approximately": ["その工場は約300人の雇用を生みます。", "The tour lasts about two hours.", "そのツアーは約2時間です。"], "currently": ["その部屋は現在清掃中です。", "The road is currently being repaired.", "その道路は現在補修中です。"], "previously": ["彼は以前東京で働いていました。", "The previous manager moved to London.", "前のマネージャーはロンドンに異動しました。"], "immediately": ["すぐに返信してください。", "Please call us right away if there is a problem.", "問題があればすぐにお電話ください。"], "efficient": ["新しいシステムのほうが効率的です。", "The new ad was very effective.", "新しい広告はとても効果的でした。"], "convenient": ["火曜日はご都合いかがですか。", "Would Monday be convenient for you?", "月曜日はご都合よろしいでしょうか。"], "valid": ["入るには有効なIDバッジが必要です。", "This coupon is valid until March 31.", "このクーポンは3月31日まで有効です。"], "eligible": ["会員は割引を受ける資格があります。", "Full-time staff are eligible to join the program.", "正社員はそのプログラムに参加する資格があります。"], "exceptional": ["その店は非常に優れたサービスで知られています。", "We make an exception for members.", "会員は例外として扱います。"], "temporary": ["これは一時的な解決策にすぎません。", "We hired three temporary workers for the summer.", "夏の間、臨時職員を3人雇いました。"], "annual": ["年次総会は6月に開かれます。", "The festival is held annually in October.", "その祭りは毎年10月に開かれます。"], "quarterly": ["四半期の業績は良好です。", "Sales rose in the third quarter.", "第3四半期に売上が伸びました。"], "deposit": ["100ドルの保証金が必要です。", "The deposit will be returned when you move out.", "保証金は退去時に返却されます。"], "subscription": ["定期購読の更新ありがとうございます。", "I subscribe to two business magazines.", "私はビジネス雑誌を2誌定期購読しています。"], "renew": ["カードはオンラインで更新できます。", "The contract will be renewed for another year.", "契約はもう1年更新されます。"], "expire": ["会員資格は5月に期限が切れます。", "Check the expiration date on the coupon.", "クーポンの有効期限を確認してください。"], "register": ["割引を受けるには8月25日までに申し込んでください。", "Over 300 people registered for the seminar.", "300人以上がセミナーに申し込みました。"], "registration": ["登録は金曜日に締め切られます。", "The registration fee is $20.", "登録料は20ドルです。"], "confirm": ["出席するかどうかメールで確認してください。", "You will receive an order confirmation by e-mail.", "メールで注文確認書が届きます。"], "notify": ["注文品の発送時にお知らせします。", "Please notify us of any change of address.", "住所が変わった場合はお知らせください。"], "inquiry": ["お問い合わせありがとうございます。", "I am writing to inquire about your rates.", "料金についてお尋ねしたくご連絡しました。"], "assist": ["スタッフが喜んでお手伝いします。", "Could you assist me with this report?", "この報告書を手伝っていただけますか。"], "ensure": ["ドアに鍵がかかっていることを必ず確認してください。", "Please make sure that all windows are closed.", "すべての窓が閉まっていることを確認してください。"], "reference": ["推薦状を2通提出してください。", "Please keep this e-mail for future reference.", "今後の参考のためにこのメールを保管してください。"], "proposal": ["取締役会がその提案を検討します。", "She proposed a new design for the logo.", "彼女はロゴの新しいデザインを提案しました。"], "be responsible for": ["ヤマダさんは新人研修を担当しています。", "He is responsible for managing the budget.", "彼は予算の管理を担当しています。"], "in advance": ["少なくとも2週間前に予約してください。", "Please let us know three days in advance.", "3日前までにお知らせください。"], "on behalf of": ["彼女はCEOの代理としてイベントに出席しました。", "On behalf of our team, thank you for coming.", "チームを代表して、お越しいただきありがとうございます。"], "ahead of schedule": ["そのプロジェクトは予定より早く終わりました。", "The flight departed on schedule.", "その便は予定どおりに出発しました。"], "behind schedule": ["工事は予定より遅れています。", "The shipment has been delayed by a week.", "発送は1週間遅れています。"], "under budget": ["その作業は予算内で完了しました。", "We need to keep the event within budget.", "イベントは予算内に収める必要があります。"], "out of stock": ["卓上整理棚は在庫切れです。", "The tickets sold out in an hour.", "チケットは1時間で売り切れました。"], "in stock": ["このモデルの在庫はありますか。", "We have all sizes in stock.", "全サイズの在庫があります。"], "run out of": ["パンフレットを切らしてしまいました。", "We are out of coffee, so I'll buy some.", "コーヒーを切らしているので買ってきます。"], "take place": ["フォーラムはシカゴで開催されます。", "The awards ceremony took place last night.", "授賞式は昨夜行われました。"], "sign up for": ["ワークショップに2つ申し込みました。", "You can sign up for the newsletter online.", "ニュースレターにはオンラインで登録できます。"], "fill out": ["この用紙に記入してください。", "Please fill in your name and address.", "お名前とご住所をご記入ください。"], "hand in": ["金曜日までに報告書を提出してください。", "Please turn in your badge when you leave.", "退出時にバッジを返却してください。"], "look forward to": ["お会いできるのを楽しみにしています。", "We look forward to working with you.", "一緒にお仕事できるのを楽しみにしています。"], "be in charge of": ["そのプロジェクトの担当は誰ですか。", "Please ask the person in charge.", "担当者にお尋ねください。"], "due to": ["悪天候のため便が遅れました。", "The report is due next Monday.", "報告書の期限は来週月曜日です。"], "in spite of": ["雨にもかかわらず、イベントは開催されました。", "Despite the cold, many people came.", "寒さにもかかわらず多くの人が来ました。"], "as scheduled": ["コンサートは予定どおりに開催されました。", "The project is going as planned.", "プロジェクトは計画どおりに進んでいます。"], "at no charge": ["無料で速達便に変更いたします。", "Repairs are made at no cost to you.", "修理はお客様の負担なしで行います。"], "free of charge": ["宿泊客の駐車は無料です。", "Guests receive a complimentary breakfast.", "宿泊客は無料の朝食を受けられます。"], "on request": ["ベジタリアン料理はご要望に応じてご用意します。", "A printed copy is available upon request.", "ご希望があれば印刷版をお渡しします。"], "in addition": ["さらに、会員はセールに先行して参加できます。", "In addition to the salary, we offer free lunch.", "給与に加えて無料の昼食を提供します。"], "as well as": ["工具だけでなく園芸用品も販売しています。", "She speaks French as well as English.", "彼女は英語だけでなくフランス語も話します。"], "instead of": ["東の駐車場の代わりに西の駐車場を使ってください。", "The bus was full, so I took a taxi instead.", "バスが満員だったので、代わりにタクシーに乗りました。"], "according to": ["報告書によると、売上が伸びました。", "Please complete the form according to the instructions.", "説明に従って用紙に記入してください。"], "in terms of": ["価格の点では、プランBのほうが良いです。", "In terms of quality, this is our best product.", "品質の点では、これが当社最高の製品です。"], "be eligible for": ["会員は15%割引の対象です。", "Staff who work over 20 hours a week are eligible for benefits.", "週20時間以上働くスタッフは手当の対象です。"], "be familiar with": ["このソフトに詳しいですか。", "The name sounds familiar to me.", "その名前には聞き覚えがあります。"], "be aware of": ["新しい規則に注意してください。", "Please be aware that the lobby will be closed on Sunday.", "日曜日はロビーが閉鎖されますのでご注意ください。"], "comply with": ["全スタッフが安全規則に従わなければなりません。", "The company follows strict safety rules.", "その会社は厳しい安全規則に従っています。"], "deal with": ["彼女は顧客の苦情に対応しています。", "The manager will handle the problem.", "その問題はマネージャーが対処します。"], "carry out": ["顧客調査を実施します。", "The research team conducted several tests.", "研究チームはいくつかの試験を行いました。"], "set up": ["月曜日までに展示を設置する必要があります。", "She set up her own company in 2020.", "彼女は2020年に自分の会社を設立しました。"], "put off": ["会議を月曜日まで延期しましょう。", "We can't put it off any longer.", "これ以上それを延期することはできません。"], "call off": ["屋外イベントは中止されました。", "The game was put off, not called off.", "試合は中止ではなく延期されました。"], "turn down": ["彼は仕事の申し出を断りました。", "Could you turn down the music?", "音楽の音量を下げてもらえますか。"], "come up with": ["彼女は素晴らしいアイデアを思いつきました。", "We need to come up with a solution quickly.", "すぐに解決策を考え出す必要があります。"], "figure out": ["原因を突き止める必要があります。", "I can't figure out how to use this printer.", "このプリンターの使い方がわかりません。"], "pick up": ["パンフレットを受け取ってきてもらえますか。", "I'll pick you up at the airport.", "空港まで車で迎えに行きます。"], "drop off": ["正午に荷物を届けます。", "Could you drop me off at the station?", "駅で降ろしてもらえますか。"], "go over": ["もう一度契約書を見直しましょう。", "Let's review the plan before the meeting.", "会議の前に計画を見直しましょう。"], "get in touch with": ["ブルックスさんに連絡をとってください。", "Let's keep in touch after the conference.", "会議の後も連絡を取り合いましょう。"], "keep track of": ["このアプリで経費を記録できます。", "It's easy to lose track of time when you're busy.", "忙しいと時間がわからなくなりがちです。"], "make sure": ["照明が消えていることを確かめてください。", "Make sure that you bring your ID.", "必ず身分証明書を持ってきてください。"], "take advantage of": ["この特別提供をぜひご利用ください。", "Many guests took advantage of the free shuttle.", "多くの宿泊客が無料シャトルを利用しました。"], "a wide range of": ["幅広い製品を取りそろえています。", "The library offers a variety of courses.", "その図書館はさまざまな講座を提供しています。"], "at least": ["出発の少なくとも10日前に予約してください。", "The meeting will last two hours at most.", "会議は長くても2時間です。"], "no later than": ["遅くとも5月15日までに提出してください。", "Payment must be received by June 1.", "支払いは6月1日までに必要です。"], "be about to": ["会議がまさに始まろうとしています。", "I was about to call you.", "ちょうどあなたに電話しようとしていたところです。"], "on time": ["電車は時間どおりに着きました。", "We arrived just in time for the opening speech.", "開会のスピーチにちょうど間に合いました。"]};
+[...W,...I].forEach(it=>{const x=XT[it.en]||[];it.exj=x[0]||'';it.ex2=x[1]||'';it.ex2j=x[2]||''});
+const D=[{name:'単語',items:W},{name:'熟語',items:I}];
+
+{const nd=s=>(s.tx.match(/(^|\n)\[[^\]\n]*[A-Za-z][^\]\n]*\]\n/g)||[]).length;P[2].sets.sort((a,b)=>nd(a)-nd(b));}
+// numbering
+P.forEach(p=>{let n=0;p.sets.forEach(s=>{s.start=n+1;n+=s.q.length});p.total=n});
+
+const KEY='toeic-reading-v3';
+let st={ans:{},part:0,set:[0,0,0],mode:'test',deck:0,sm:'card',known:{},ci:[0,0],only:false,qr:[{r:0,n:0},{r:0,n:0}],wr:{}};
+try{const r=JSON.parse(localStorage.getItem(KEY));if(r&&r.ans)st=Object.assign(st,r)}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
+const pct=(r,n)=>n?Math.round(r/n*100)+'%':'—';
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const k=(p,s,i)=>p+'-'+s+'-'+i;
+const partScore=pi=>{let a=0,c=0;P[pi].sets.forEach((s,si)=>s.q.forEach((x,qi)=>{const v=st.ans[k(pi,si,qi)];if(v!=null){a++;if(v===x.a)c++}}));return{a,c}};
+
+const stop=()=>{};
+const tabs=document.getElementById('tabs'),card=document.getElementById('card'),sheet=document.getElementById('sheet');
+
+const renderTabs=()=>{
+  tabs.innerHTML=P.map((p,i)=>{const s=partScore(i);return `<button class="tab" role="tab" id="tab${i}" aria-selected="${i===st.part}" data-p="${i}"><b>${p.name}</b><span>${p.jp} ${s.c}/${p.total}・${pct(s.c,s.a)}</span></button>`}).join('');
+};
+
+const renderCard=()=>{
+  const pi=st.part,p=P[pi],si=st.set[pi],s=p.sets[si];
+    const end=s.start+s.q.length-1;
+  let h=`<div class="meta"><h2>${p.name}　${p.jp}</h2><small>No. ${s.start}${end>s.start?'–'+end:''}　（${si+1} / ${p.sets.length}）</small></div><p class="dir">${p.dir}</p>`;
+  if(s.tx){
+    const parts=s.tx.split(/\n(?=\[[^\]\n]*[A-Za-z][^\]\n]*\]\n)/);
+    h+=parts.map(t=>{let head='';t=t.replace(/^\[([^\]\n]*[A-Za-z][^\]\n]*)\]\n/,(m,a)=>{head=`<h4>${esc(a)}</h4>`;return ''});
+      return `<div class="text">${head}${esc(t).replace(/\{(\d)\}/g,(m,d)=>`<span class="blank">${s.start+ +d}</span>`)}</div>`}).join('');
+  }
+  s.q.forEach((x,qi)=>{
+    const no=s.start+qi,v=st.ans[k(pi,si,qi)],done=v!=null;
+    const letters=!x.c;
+    const n=letters?p.n:x.c.length;
+    const title=x.t?esc(x.t):(s.tx?'空所に入る最も適切なものを選んでください。':'');
+    h+=`<section class="q"><p class="qt"><b>No. ${no}</b>${title}</p><div class="chs${letters?' row':''}">`;
+    for(let c=0;c<n;c++){
+      let cls='ch';if(done){if(c===v)cls+=' sel';if(c===x.a)cls+=' right';else if(c===v)cls+=' wrong'}
+      h+=`<button class="${cls}" data-q="${qi}" data-c="${c}"${done?' disabled':''} aria-label="No. ${no} ${L[c]}"><span class="ov">${L[c]}</span>${letters?'':`<span>${esc(x.c[c])}</span>`}</button>`;
+    }
+    h+='</div>';
+    if(done)h+=`<div class="fb">${v===x.a?'<strong class="ok">正解</strong>':`<strong class="ng">不正解</strong>　正解は (${L[x.a]})`}<span class="nt"><b>解説</b>${esc(x.e)}</span></div>`;
+    h+='</section>';
+  });
+  const last=pi===P.length-1&&si===p.sets.length-1;
+  h+=`<div class="nav"><button class="btn" id="prev"${pi===0&&si===0?' disabled':''}>← 前へ</button><button class="btn solid" id="next"${last?' disabled':''}>${si===p.sets.length-1?'次のパートへ →':'次へ →'}</button></div>`;
+  card.innerHTML=h;
+};
+
+
+const modes=document.getElementById('modes');
+const kk=(d,it)=>d+':'+it.en;
+const isK=(d,it)=>!!st.known[kk(d,it)];
+const kc=d=>D[d].items.filter(it=>isK(d,it)).length;
+const pool=d=>{const a=D[d].items;if(!st.only)return a;const u=a.filter(it=>!isK(d,it));return u};
+let flip=false,qz=null,term='';
+const noteHTML=it=>`<div class="nt"><b>解説</b>${esc(it.note)}<span class="eg">${esc(it.ex2)}<i>${esc(it.ex2j)}</i></span></div>`;
+const wacc=(d,it)=>{const w=st.wr[kk(d,it)];return w?`正答率 ${pct(w[0],w[1])}（${w[0]}/${w[1]}）`:'クイズ未回答'};
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const newQuiz=()=>{
+  const d=st.deck,pl=pool(d);if(!pl.length){qz=null;return}
+  const it=pl[Math.floor(Math.random()*pl.length)];
+  const others=shuf(D[d].items.filter(x=>x!==it&&x.ja!==it.ja)).slice(0,3);
+  qz={it,opts:shuf([it,...others]),pick:null};
+};
+const renderModes=()=>{modes.innerHTML=[['test','テスト'],['study','勉強']].map(([m,l])=>`<button class="mode" data-m="${m}" aria-pressed="${st.mode===m}">${l}</button>`).join('');tabs.setAttribute('aria-label',st.mode==='study'?'教材選択':'パート選択')};
+const renderSTabs=()=>{tabs.innerHTML=D.map((d,i)=>`<button class="tab" role="tab" id="tab${i}" aria-selected="${i===st.deck}" data-d="${i}"><b>${d.name}</b><span>覚えた ${kc(i)}/${d.items.length}・${pct(st.qr[i].r,st.qr[i].n)}</span></button>`).join('')};
+const listHTML=()=>{
+  const d=st.deck,t=term.trim().toLowerCase();
+  const it=D[d].items.filter(x=>(!st.only||!isK(d,x))&&(!t||x.en.toLowerCase().includes(t)||x.ja.includes(t)));
+  if(!it.length)return '<p class="note">該当する語がありません。</p>';
+  return '<ul class="vl">'+it.map(x=>`<li><div><b>${esc(x.en)}</b>${x.pos!=='熟語'?`<span class="p">${esc(x.pos)}</span>`:''}<span class="m">${esc(x.ja)}</span><span class="x">${esc(x.ex)}（${esc(x.exj)}）</span><span class="x"><b class="nb">解説</b>${esc(x.note)}</span><span class="x eg2">例：${esc(x.ex2)}（${esc(x.ex2j)}）</span><span class="x">${wacc(d,x)}</span></div><button class="kn" data-k="${esc(x.en)}" aria-pressed="${isK(d,x)}">${isK(d,x)?'覚えた ✓':'覚えた'}</button></li>`).join('')+'</ul>';
+};
+const renderStudy=()=>{
+  const d=st.deck,dk=D[d];
+  let h=`<div class="meta"><h2>${dk.name}</h2><small>覚えた ${kc(d)} / ${dk.items.length}</small></div>`;
+  h+=`<div class="sub">${[['card','カード'],['quiz','4択クイズ'],['list','一覧']].map(([m,l])=>`<button class="btn" data-sm="${m}" aria-pressed="${st.sm===m}">${l}</button>`).join('')}<label class="chk"><input type="checkbox" id="only"${st.only?' checked':''}>覚えていないものだけ</label></div>`;
+  const pl=pool(d);
+  if(st.sm!=='list'&&!pl.length){h+=`<div class="fc"><div class="ja">全部「覚えた」になりました</div><p class="ex">「覚えていないものだけ」を外すと、全部の語をもう一度練習できます。</p></div>`;card.innerHTML=h;return}
+  if(st.sm==='card'){
+    const i=st.ci[d]%pl.length,it=pl[i];
+    h+=`<div class="fc">${isK(d,it)?'<span class="tag">覚えた ✓</span>':''}<span class="cnt">${i+1} / ${pl.length}</span><div class="en">${esc(it.en)}</div>`;
+    h+=flip?`${it.pos!=='熟語'?`<div class="pos">${esc(it.pos)}</div>`:''}<div class="ja">${esc(it.ja)}</div><div class="ex">${esc(it.ex)}<i class="j">${esc(it.exj)}</i></div>${noteHTML(it)}<div class="pos">${wacc(d,it)}</div>`:`<p class="note">意味を思い浮かべてから「意味を見る」を押してください。</p>`;
+    h+=`</div><div class="row2">`+(flip?`<button class="btn" id="cNo">まだ</button><button class="btn solid" id="cYes">覚えた</button>`:`<button class="btn" id="cPrev">← 前</button><button class="btn solid" id="cFlip">意味を見る</button><button class="btn" id="cNext">次 →</button>`)+`</div>`;
+  }else if(st.sm==='quiz'){
+    if(!qz||!pl.includes(qz.it))newQuiz();
+    const it=qz.it,done=qz.pick!=null;
+    h+=`<div class="fc" style="min-height:160px"><span class="cnt">正答率 ${pct(st.qr[d].r,st.qr[d].n)}（${st.qr[d].r}/${st.qr[d].n}）</span><div class="en">${esc(it.en)}</div>${done?`<div class="ex">${esc(it.ex)}<i class="j">${esc(it.exj)}</i></div>`:'<p class="note">意味として正しいものを選んでください。</p>'}</div><div class="chs" style="margin-top:14px">`;
+    qz.opts.forEach((o,c)=>{let cls='ch';if(done){if(o===it)cls+=' right';else if(c===qz.pick)cls+=' wrong sel'}h+=`<button class="${cls}" data-o="${c}"${done?' disabled':''}><span class="ov">${L[c]}</span><span>${esc(o.ja)}</span></button>`});
+    h+='</div>';
+    if(done)h+=`<div class="fb">${qz.opts[qz.pick]===it?'<strong class="ok">正解</strong>':`<strong class="ng">不正解</strong>　正解は「${esc(it.ja)}」`}　<span class="note">この語の${wacc(d,it)}</span>${noteHTML(it)}</div><div class="row2">${isK(d,it)?'':`<button class="btn" id="qK">覚えたにする</button>`}<button class="btn solid" id="qNext">次の問題 →</button></div>`;
+  }else{
+    h+=`<input class="srch" id="srch" type="search" placeholder="英語か日本語で検索" value="${esc(term)}" aria-label="検索"><div id="vlist">${listHTML()}</div>`;
+  }
+  card.innerHTML=h;
+};
+const renderSSheet=()=>{
+  const d=st.deck,dk=D[d],n=kc(d),pc=Math.round(n/dk.items.length*100);
+  sheet.innerHTML=`<h3>学習の記録　${dk.name}</h3><div class="score">${n}<small> / ${dk.items.length} 覚えた</small></div><div class="bar"><i style="width:${pc}%"></i></div><p class="note" style="margin:0 0 12px">覚えた割合 ${pc}%</p><h3 style="font-size:15px;margin-top:6px">4択クイズの正答率</h3>${D.map((x,i)=>`<div class="stat${i===d?' on':''}"><span>${x.name}</span><span>${st.qr[i].r}/${st.qr[i].n} 問　<b>${pct(st.qr[i].r,st.qr[i].n)}</b></span></div>`).join('')}<h3 style="font-size:15px;margin-top:14px">覚えた語</h3>${D.map((x,i)=>`<div class="stat${i===d?' on':''}"><span>${x.name}</span><span>${kc(i)} / ${x.items.length}</span></div>`).join('')}<button class="btn" id="kReset" style="width:100%;margin-top:14px">${confirmReset?'もう一度押すとリセット':`${dk.name}の記録をリセット`}</button>`;
+};
+const setK=(d,it,v)=>{const key=kk(d,it);if(v)st.known[key]=1;else delete st.known[key];save()};
+const studyRender=()=>{renderSTabs();renderStudy();renderSSheet()};
+const studyClick=e=>{
+  const d=st.deck,pl=pool(d),t=e.target.closest('button');if(!t)return;
+  const sm=t.dataset.sm;if(sm){st.sm=sm;flip=false;save();studyRender();return}
+  const cur=()=>pl[st.ci[d]%pl.length];
+  if(t.id==='cFlip'){flip=true;renderStudy();return}
+  if(t.id==='cNext'||t.id==='cPrev'){st.ci[d]=(st.ci[d]+(t.id==='cNext'?1:pl.length-1))%pl.length;flip=false;save();renderStudy();return}
+  if(t.id==='cYes'||t.id==='cNo'){
+    const it=cur(),yes=t.id==='cYes';setK(d,it,yes);flip=false;
+    if(!(st.only&&yes))st.ci[d]=st.ci[d]+1;
+    const np=pool(d).length;st.ci[d]=np?st.ci[d]%np:0;save();studyRender();return}
+  if(t.dataset.o!=null&&qz&&qz.pick==null){qz.pick=+t.dataset.o;const ok=qz.opts[qz.pick]===qz.it,key=kk(d,qz.it),w=st.wr[key]||[0,0];w[1]++;if(ok)w[0]++;st.wr[key]=w;st.qr[d].n++;if(ok)st.qr[d].r++;save();renderSTabs();renderStudy();renderSSheet();return}
+  if(t.id==='qK'){setK(d,qz.it,true);renderSTabs();renderStudy();renderSSheet();return}
+  if(t.id==='qNext'){newQuiz();renderStudy();return}
+  if(t.dataset.k!=null){const it=D[d].items.find(x=>x.en===t.dataset.k);setK(d,it,!isK(d,it));renderSTabs();document.getElementById('vlist').innerHTML=listHTML();renderSSheet();return}
+};
+card.addEventListener('input',e=>{if(st.mode==='study'&&e.target.id==='srch'){term=e.target.value;document.getElementById('vlist').innerHTML=listHTML()}});
+card.addEventListener('change',e=>{if(st.mode==='study'&&e.target.id==='only'){st.only=e.target.checked;st.ci[st.deck]=0;flip=false;qz=null;save();studyRender()}});
+modes.addEventListener('click',e=>{const b=e.target.closest('.mode');if(!b||b.dataset.m===st.mode)return;st.mode=b.dataset.m;confirmReset=false;save();render()});
+
+let confirmReset=false;
+const renderSheet=()=>{
+  const pi=st.part,p=P[pi],sc=partScore(pi);
+  let rows='';
+  p.sets.forEach((s,si)=>s.q.forEach((x,qi)=>{
+    const v=st.ans[k(pi,si,qi)],n=x.c?x.c.length:p.n;
+    let b='';for(let c=0;c<n;c++)b+=`<i class="${v===c?'on':''}">${L[c]}</i>`;
+    const mk=v==null?'':v===x.a?'<span class="mk ok">○</span>':'<span class="mk ng">×</span>';
+    rows+=`<button class="sq${si===st.set[pi]?' cur':''}" data-s="${si}" aria-label="No. ${s.start+qi}へ"><b>${s.start+qi}</b><span class="bub">${b}</span>${mk||'<span></span>'}</button>`;
+  }));
+  const all=P.reduce((t,_,i)=>{const s=partScore(i);t.a+=s.a;t.c+=s.c;return t},{a:0,c:0});
+  const tot=P.reduce((t,p)=>t+p.total,0);
+  const tbl=P.map((x,i)=>{const t=partScore(i);return `<div class="stat${i===pi?' on':''}"><span>${x.name}</span><span>${t.c}/${t.a} 問　<b>${pct(t.c,t.a)}</b></span></div>`}).join('')+`<div class="stat"><span>全体</span><span>${all.c}/${all.a} 問　<b>${pct(all.c,all.a)}</b></span></div>`;
+  sheet.innerHTML=`<h3>解答用紙　${p.name}</h3><div class="score">${pct(sc.c,sc.a)}<small> 正答率</small></div><p class="note" style="margin:0 0 10px">${p.name}：解答 ${sc.a} / ${p.total} 問中 ${sc.c} 問正解</p>${tbl}<div class="rows">${rows}</div><button class="btn" id="reset" style="width:100%">${confirmReset?'もう一度押すとリセット':'このパートをやり直す'}</button>`;
+};
+
+const render=()=>{renderModes();if(st.mode==='study'){studyRender();return}renderTabs();renderCard();renderSheet()};
+const go=(pi,si)=>{stop();confirmReset=false;st.part=pi;st.set[pi]=si;save();render();if(card.getBoundingClientRect().top<0)card.scrollIntoView({block:'start'});};
+tabs.addEventListener('click',e=>{const b=e.target.closest('.tab');if(b&&st.mode==='study'){st.deck=+b.dataset.d;flip=false;qz=null;term='';confirmReset=false;save();render();return}if(b){go(+b.dataset.p,st.set[+b.dataset.p]);b.scrollIntoView({inline:'nearest',block:'nearest'})}});
+tabs.addEventListener('keydown',e=>{if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;if(st.mode==='study'){st.deck=1-st.deck;flip=false;qz=null;save();render();document.getElementById('tab'+st.deck)?.focus();return}const n=(st.part+(e.key==='ArrowRight'?1:P.length-1))%P.length;go(n,st.set[n]);document.getElementById('tab'+n)?.focus()});
+card.addEventListener('click',e=>{
+  if(st.mode==='study'){studyClick(e);return}
+  const pi=st.part,si=st.set[pi],p=P[pi],s=p.sets[si];
+  const ch=e.target.closest('.ch');
+  if(ch&&!ch.disabled){st.ans[k(pi,si,+ch.dataset.q)]=+ch.dataset.c;save();renderTabs();renderCard();renderSheet();
+    const fb=card.querySelectorAll('.q')[+ch.dataset.q]?.querySelector('.fb');fb?.scrollIntoView({block:'nearest'});return}
+  if(e.target.id==='prev'){if(si>0)go(pi,si-1);else go(pi-1,P[pi-1].sets.length-1)}
+  if(e.target.id==='next'){if(si<p.sets.length-1)go(pi,si+1);else go(pi+1,0)}
+});
+sheet.addEventListener('click',e=>{
+  if(st.mode==='study'){if(e.target.id==='kReset'){if(!confirmReset){confirmReset=true;renderSSheet();return}Object.keys(st.known).forEach(x=>{if(x.startsWith(st.deck+':'))delete st.known[x]});Object.keys(st.wr).forEach(x=>{if(x.startsWith(st.deck+':'))delete st.wr[x]});st.qr[st.deck]={r:0,n:0};confirmReset=false;st.ci[st.deck]=0;save();studyRender()}return}
+  const r=e.target.closest('.sq');if(r){go(st.part,+r.dataset.s);return}
+  if(e.target.id==='reset'){
+    if(!confirmReset){confirmReset=true;renderSheet();return}
+    const pi=st.part;Object.keys(st.ans).forEach(x=>{if(x.startsWith(pi+'-'))delete st.ans[x]});
+    confirmReset=false;st.set[pi]=0;save();render();
+  }
+});
+render();
+}
+</script>
+</body>
+</html>
